@@ -31,6 +31,12 @@ const createUser = async (payload: any) => {
     return result
 }
 
+const loginUser = async (payload: any) => {
+
+}
+
+
 export const UserServices = {
-    createUser
+    createUser,
+    loginUser
 }
