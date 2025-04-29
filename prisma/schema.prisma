@@ -16,11 +16,45 @@ model Users {
   role     UserRole @default(USER)
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
-
+  video Video[]
   @@map("user")
 }
+
+
+model Video {
+  id               String   @id @default(uuid())
+  title            String
+  genre            String
+  thumbnailImage   String?   
+  video            String?  
+  director         String
+  releaseYear      Int      
+  cast             String
+  streamingPlatform String   
+  description      String
+  like             Int    @default(0)  
+  price            Float
+  rating           Float
+  dislike          Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  userId          String
+  user             Users    @relation(fields: [userId], references: [id])
+  @@map("video")
+}
+
 
 enum UserRole {
   USER
   ADMIN
+}
+
+enum StreamingPlatform {
+  NETFLIX
+  DISNEY
+  HBO
+  AMAZON
+  APPLE
+  YOUTUBE
+  SPOTIFY
 }

@@ -12,5 +12,10 @@ export default {
         expires_in: process.env.EXPIRES_IN,
         refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
         refresh_token_expires_in: process.env.REFRESH_TOKEN_EXPIRES_IN,
+    },
+    cloud:{
+        cloud_name: process.env.CLOUD_NAME,
+        api_key: process.env.CLOUD_API_KEY,
+        api_secret: process.env.CLOUD_API_SECRET
     }
 }

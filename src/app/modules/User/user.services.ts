@@ -1,7 +1,6 @@
 import prisma from "../../../helpers/prisma"
 import bcrypt from 'bcrypt'
 
-
 const createUser = async (payload: any) => {
 
     const existingUser = await prisma.users.findFirst({
