@@ -39,8 +39,32 @@ const deleteReview = catchAsync(async (req, res, next) => {
   });
 });
 
+const getSingleReview = catchAsync(async (req, res, next) => {
+  const reviewId = req.params.id;
+  const result = await ReviewServices.getSingleReview(reviewId);
+  sendResponse(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'Review delete successfully',
+    data: result,
+  });
+});
+
+const getReview = catchAsync(async (req, res, next) => {
+  const reviewId = req.params.id;
+  const result = await ReviewServices.getSingleReview(reviewId);
+  sendResponse(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'Review delete successfully',
+    data: result,
+  });
+});
+
 export const ReviewController = {
   addReview,
   editReview,
   deleteReview,
+  getSingleReview,
+  getReview
 };

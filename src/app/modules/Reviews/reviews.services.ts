@@ -1,5 +1,5 @@
 import prisma from '../../../helpers/prisma';
-import ApiError from '../../errors/ApiError';
+import ApiError from '../../errors/apiError';
 import { IAuthUser } from '../../interface/common';
 import httpStatus from 'http-status';
 
@@ -95,8 +95,21 @@ const deleteReview = async (user: IAuthUser, reviewId: string) => {
   return result;
 };
 
+
+const getSingleReview = async ( reviewId: string) => {
+
+  const result = await prisma.review.findFirstOrThrow({
+    where: {
+      id: reviewId,
+    },
+  });
+
+  return result;
+};
+
 export const ReviewServices = {
   addReview,
   editReview,
   deleteReview,
+  getSingleReview
 };
