@@ -31,6 +31,7 @@ cloudinary_1.v2.config({
     api_key: config_1.default.cloud.api_key,
     api_secret: config_1.default.cloud.api_secret,
 });
+//* Upload to Cloudinary
 const uploadToCloudinary = (file) => __awaiter(void 0, void 0, void 0, function* () {
     return new Promise((resolve, reject) => {
         cloudinary_1.v2.uploader.upload(file.path, (error, result) => {

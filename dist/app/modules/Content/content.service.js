@@ -46,9 +46,10 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
-const getAllContent = (params) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
+        const { page, limit, sortBy, sortOrder, skip } = (0, content_constans_1.calculatePagination)(options);
         const conditions = [];
         //*create search conditions for searchable fields
         if (searchTerm) {
@@ -73,12 +74,22 @@ const getAllContent = (params) => __awaiter(void 0, void 0, void 0, function* ()
             });
         }
         const whereConditions = conditions.length > 0 ? { AND: conditions } : {};
-        return yield prisma.video.findMany({
+        const result = yield prisma.video.findMany({
             where: whereConditions,
-            // Consider adding for better performance:
-            // take: 20, // Pagination limit
-            // orderBy: { createdAt: 'desc' } // Default sorting
+            skip,
+            take: limit,
+            orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
         });
+        return {
+            meta: {
+                page,
+                limit,
+                total: yield prisma.video.count({
+                    where: whereConditions,
+                }),
+            },
+            data: result,
+        };
     }
     catch (err) {
         const error = err instanceof Error ? err : new Error('Database operation failed');
@@ -86,21 +97,67 @@ const getAllContent = (params) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 //* update content
-const updateContent = (id, data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('data', data);
-    console.log('id', id);
-    //   try {
-    //     const content = await prisma.video.update({
-    //       where: { id },
-    //       data,
-    //     });
-    //     return content;
-    //   } catch (err) {
-    //     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
-    //   }
+const updateContent = (id, req) => __awaiter(void 0, void 0, void 0, function* () {
+    const file = req.file;
+    if (file) {
+        const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
+        req.body.thumbnailImage = uploadImage.secure_url;
+    }
+    try {
+        const isExist = yield prisma.video.findUnique({
+            where: { id },
+        });
+        if (!isExist) {
+            throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'Content not found');
+        }
+        const content = yield prisma.video.update({
+            where: { id },
+            data: req.body,
+        });
+        return content;
+    }
+    catch (err) {
+        throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
+    }
+});
+const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const isExist = yield prisma.video.findUnique({
+            where: { id },
+        });
+        if (!isExist) {
+            throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'Content not found');
+        }
+        const content = yield prisma.video.findUnique({
+            where: { id },
+        });
+        return content;
+    }
+    catch (err) {
+        throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
+    }
+});
+const deleteContent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const isExist = yield prisma.video.findUnique({
+            where: { id },
+        });
+        if (!isExist) {
+            throw new apiError_1.default(http_status_1.default.NOT_FOUND, 'Content not found');
+        }
+        const content = yield prisma.video.delete({
+            where: { id },
+        });
+        return content;
+    }
+    catch (err) {
+        throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
+    }
 });
 exports.contentService = {
     createContent,
     getAllContent,
     updateContent,
+    deleteContent,
+    getContentById,
 };
