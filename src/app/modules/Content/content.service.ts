@@ -5,6 +5,7 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { calculatePagination, searchableFields } from './content.constans';
 import { SearchParams, TPaginationOptions } from './content.interface';
 import ApiError from '../../errors/apiError';
+
 const prisma = new PrismaClient();
 
 const createContent = async (req: any) => {
