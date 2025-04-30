@@ -106,10 +106,17 @@ const getSingleReview = async ( reviewId: string) => {
 
   return result;
 };
+const getReview = async ( reviewId: string) => {
+
+  const result = await prisma.review.findMany()
+
+  return result;
+};
 
 export const ReviewServices = {
   addReview,
   editReview,
   deleteReview,
-  getSingleReview
+  getSingleReview,
+  getReview
 };
