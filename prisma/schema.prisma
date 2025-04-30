@@ -8,41 +8,135 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Users {
-  id       String   @id @default(uuid())
-  name     String
-  email    String   @unique
-  password String
-  role     UserRole @default(USER)
-  createAt DateTime @default(now())
-  updateAt DateTime @updatedAt
-  video Video[]
+model User {
+  id        String      @id @default(uuid())
+  name      String
+  email     String      @unique
+  password  String
+  role      UserRole    @default(USER)
+  createAt  DateTime    @default(now())
+  updateAt  DateTime    @updatedAt
+  video     Video[]
+  like      Like[]
+  Review    Review[]
+  Comment   Comment[]
+  WatchList WatchList[]
+  Purchase  Purchase[]
+
   @@map("user")
 }
 
-
 model Video {
-  id               String   @id @default(uuid())
-  title            String
-  genre            String
-  thumbnailImage   String?   
-  video            String?  
-  director         String
-  releaseYear      Int      
-  cast             String
-  streamingPlatform String   
-  description      String
-  like             Int    @default(0)  
-  price            Float
-  rating           Float
-  dislike          Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  userId          String
-  user             Users    @relation(fields: [userId], references: [id])
+  id                String   @id @default(uuid())
+  title             String
+  genre             String
+  thumbnailImage    String?
+  video             String?
+  director          String
+  releaseYear       Int
+  cast              String
+  streamingPlatform String
+  description       String
+  like              Int      @default(0)
+  price             Float
+  rating            Float
+  dislike           Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  Review    Review[]
+  WatchList WatchList[]
+  Purchase  Purchase[]
+
   @@map("video")
 }
 
+model Like {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("likes")
+}
+
+model Review {
+  id     String @id @default(uuid())
+  rating Int
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  content   String
+  isSpoiler Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  like      Like[]
+  Comment   Comment[]
+
+  @@map("reviews")
+}
+
+model Comment {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  reviewId String
+  review   Review @relation(fields: [reviewId], references: [id])
+
+  content  String
+  createAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+model WatchList {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  createAt DateTime @default(now())
+
+  @@map("watch-list")
+}
+
+model Purchase {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
+
+  type      PurchaseType
+  expiresAt DateTime?
+  paymentId String
+  createAt  DateTime     @default(now())
+
+  @@map("purchases")
+}
+
+enum PurchaseType {
+  BUY
+  RENT
+}
 
 enum UserRole {
   USER
