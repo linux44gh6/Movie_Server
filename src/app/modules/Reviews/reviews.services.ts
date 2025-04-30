@@ -96,7 +96,7 @@ const deleteReview = async (user: IAuthUser, reviewId: string) => {
 };
 
 
-const getSingleReview = async ( reviewId: string) => {
+const getSingleReview = async (reviewId: string) => {
 
   const result = await prisma.review.findFirstOrThrow({
     where: {
@@ -106,9 +106,9 @@ const getSingleReview = async ( reviewId: string) => {
 
   return result;
 };
-const getReview = async ( reviewId: string) => {
+const getReview = async () => {
 
-  const result = await prisma.review.findMany()
+  const result = await prisma.comment.findMany()
 
   return result;
 };

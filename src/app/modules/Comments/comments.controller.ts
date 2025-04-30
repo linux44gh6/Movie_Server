@@ -15,6 +15,18 @@ const addComments = catchAsync(async (req, res, next) => {
     });
 });
 
+const getAllComment = catchAsync(async (req, res, next) => {
+    const reviewId = req.params.id;
+    const result = await CommentServices.getAllComment();
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment fetch successfully',
+        data: result,
+    });
+});
+
 export const CommentController = {
     addComments,
+    getAllComment
 };

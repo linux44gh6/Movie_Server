@@ -31,7 +31,14 @@ const addComments = async (user: any, payload: any) => {
     return result;
 };
 
+const getAllComment = async () => {
+
+    const result = await prisma.review.findMany()
+
+    return result;
+};
 
 export const CommentServices = {
-    addComments
+    addComments,
+    getAllComment
 }

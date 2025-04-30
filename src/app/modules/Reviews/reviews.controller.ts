@@ -51,8 +51,7 @@ const getSingleReview = catchAsync(async (req, res, next) => {
 });
 
 const getReview = catchAsync(async (req, res, next) => {
-  const reviewId = req.params.id;
-  const result = await ReviewServices.getSingleReview(reviewId);
+  const result = await ReviewServices.getReview();
   sendResponse(res, {
     statuscode: httpStatus.OK,
     success: true,

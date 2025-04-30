@@ -5,7 +5,7 @@ import { CommentController } from './comments.controller';
 
 const router = express.Router();
 
+router.get('/', auth(UserRole.USER, UserRole.ADMIN), CommentController.getAllComment);
 router.post('/', auth(UserRole.USER), CommentController.addComments);
-
 
 export const CommentsRoutes = router;
