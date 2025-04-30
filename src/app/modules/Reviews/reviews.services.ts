@@ -108,7 +108,7 @@ const getSingleReview = async (reviewId: string) => {
 };
 const getReview = async () => {
 
-  const result = await prisma.comment.findMany()
+  const result = await prisma.review.findMany()
 
   return result;
 };

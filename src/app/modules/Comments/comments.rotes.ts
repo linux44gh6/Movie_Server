@@ -8,5 +8,6 @@ const router = express.Router();
 router.get('/', auth(UserRole.USER, UserRole.ADMIN), CommentController.getAllComment);
 router.post('/', auth(UserRole.USER), CommentController.addComments);
 router.patch('/edit-comment/:id', auth(UserRole.USER), CommentController.editComment);
+router.delete('/delete-comment/:id', auth(UserRole.USER), CommentController.deleteComment);
 
 export const CommentsRoutes = router;
