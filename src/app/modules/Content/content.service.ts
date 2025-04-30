@@ -2,8 +2,8 @@ import httpStatus from 'http-status';
 import { uploadToCloudinary } from '../../../utils';
 import { Prisma, PrismaClient } from '@prisma/client';
 
-import { searchableFields } from './content.constans';
-import { SearchParams } from './content.interface';
+import { calculatePagination, searchableFields } from './content.constans';
+import { SearchParams, TPaginationOptions } from './content.interface';
 import ApiError from '../../errors/apiError';
 const prisma = new PrismaClient();
 
@@ -23,10 +23,10 @@ const createContent = async (req: any) => {
   }
 };
 
-const getAllContent = async (params: SearchParams) => {
+const getAllContent = async (params: SearchParams, options: TPaginationOptions) => {
   try {
     const { searchTerm, ...exactMatchFields } = params;
-
+    const { page, limit, sortBy, sortOrder, skip } = calculatePagination(options);
     const conditions: Prisma.VideoWhereInput[] = [];
 
     //*create search conditions for searchable fields
@@ -55,13 +55,22 @@ const getAllContent = async (params: SearchParams) => {
 
     const whereConditions: Prisma.VideoWhereInput =
       conditions.length > 0 ? { AND: conditions } : {};
-
-    return await prisma.video.findMany({
+    const result = await prisma.video.findMany({
       where: whereConditions,
-      // Consider adding for better performance:
-      // take: 20, // Pagination limit
-      // orderBy: { createdAt: 'desc' } // Default sorting
+      skip,
+      take: limit,
+      orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
     });
+    return {
+      meta: {
+        page,
+        limit,
+        total: await prisma.video.count({
+          where: whereConditions,
+        }),
+      },
+      data: result,
+    };
   } catch (err) {
     const error = err instanceof Error ? err : new Error('Database operation failed');
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
@@ -70,23 +79,68 @@ const getAllContent = async (params: SearchParams) => {
 
 //* update content
 
-const updateContent = async (id: string, data: any) => {
+const updateContent = async (id: string, req: any) => {
+  const file = req.file;
 
-    console.log('data', data);
-    console.log('id', id);
-//   try {
-//     const content = await prisma.video.update({
-//       where: { id },
-//       data,
-//     });
-//     return content;
-//   } catch (err) {
-//     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
-//   }
+  if (file) {
+    const uploadImage = await uploadToCloudinary(file);
+    req.body.thumbnailImage = uploadImage.secure_url;
+  }
+  try {
+    const isExist = await prisma.video.findUnique({
+      where: { id },
+    });
+    if (!isExist) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Content not found');
+    }
+    const content = await prisma.video.update({
+      where: { id },
+      data: req.body,
+    });
+    return content;
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
+  }
+};
+
+const getContentById = async (id: string) => {
+  try {
+    const isExist = await prisma.video.findUnique({
+      where: { id },
+    });
+    if (!isExist) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Content not found');
+    }
+    const content = await prisma.video.findUnique({
+      where: { id },
+    });
+    return content;
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
+  }
+};
+
+const deleteContent = async (id: string) => {
+  try {
+    const isExist = await prisma.video.findUnique({
+      where: { id },
+    });
+    if (!isExist) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'Content not found');
+    }
+    const content = await prisma.video.delete({
+      where: { id },
+    });
+    return content;
+  } catch (err) {
+    throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
+  }
 };
 
 export const contentService = {
   createContent,
   getAllContent,
   updateContent,
+  deleteContent,
+  getContentById,
 };

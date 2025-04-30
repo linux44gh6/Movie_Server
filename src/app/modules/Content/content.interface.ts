@@ -22,3 +22,10 @@ export interface SearchParams {
   searchTerm?: string;
   [key: string]: any; // For dynamic field filters
 }
+
+export type TPaginationOptions = {
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+};

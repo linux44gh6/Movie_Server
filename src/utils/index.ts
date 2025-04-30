@@ -20,6 +20,7 @@ cloudinary.config({
   api_secret: config.cloud.api_secret,
 });
 
+//* Upload to Cloudinary
 export const uploadToCloudinary = async (file: TFile): Promise<TCloudinary> => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader.upload(file.path, (error: Error, result: TCloudinary) => {

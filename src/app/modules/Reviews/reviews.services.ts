@@ -1,5 +1,5 @@
 import prisma from '../../../helpers/prisma';
-import ApiError from '../../errors/ApiError';
+import ApiError from '../../errors/apiError';
 import { IAuthUser } from '../../interface/common';
 import httpStatus from 'http-status';
 

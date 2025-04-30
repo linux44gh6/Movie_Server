@@ -8,7 +8,6 @@ import { sendEmail } from '../../../utils/sendEmail';
 import httpStatus from 'http-status';
 // import ApiError from '../../errors/ApiError';
 
-
 const loginUser = async (payload: any) => {
   const userData = await prisma.user.findFirstOrThrow({
     where: {
