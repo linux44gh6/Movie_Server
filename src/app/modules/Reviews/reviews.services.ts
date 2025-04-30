@@ -1,13 +1,17 @@
 import prisma from "../../../helpers/prisma"
+import ApiError from "../../errors/ApiError";
 import { IAuthUser } from "../../interface/common"
-
+import httpStatus from "http-status";
 
 
 const addReview = async (user: IAuthUser, payload: any) => {
 
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated or doesn't exist");
+    }
     const userData = await prisma.user.findFirstOrThrow({
         where: {
-            email: payload.email,
+            email: user.email,
             isDeleted: false
         }
     })
@@ -29,7 +33,78 @@ const addReview = async (user: IAuthUser, payload: any) => {
 
 }
 
+const editReview = async (user: IAuthUser, reviewId: string, payload: any) => {
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated");
+    }
+    const userData = await prisma.user.findFirstOrThrow({
+        where: {
+            email: user.email,
+            isDeleted: false
+        }
+    });
+
+
+    const review = await prisma.review.findFirstOrThrow({
+        where: {
+            id: reviewId,
+            isApproved: false
+        }
+    })
+
+    if (review.userId !== userData.id) {
+        throw new ApiError(httpStatus.FORBIDDEN, "You are not authorized to edit this review");
+    }
+
+    const result = await prisma.review.update({
+        where: {
+            id: reviewId
+        },
+        data: {
+            ...payload
+        }
+    })
+
+    return result
+}
+
+const deleteReview = async (user: IAuthUser, reviewId: string) => {
+
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated");
+    }
+    const userData = await prisma.user.findFirstOrThrow({
+        where: {
+            email: user.email,
+            isDeleted: false
+        }
+    });
+
+
+    const review = await prisma.review.findFirstOrThrow({
+        where: {
+            id: reviewId,
+            isApproved: false
+        }
+    })
+
+    if (review.userId !== userData.id) {
+        throw new ApiError(httpStatus.FORBIDDEN, "You are not authorized to edit this review");
+    }
+
+    const result = await prisma.review.delete({
+        where: {
+            id: reviewId
+        }
+    })
+
+    return result
+
+}
+
 
 export const ReviewServices = {
-    addReview
+    addReview,
+    editReview,
+    deleteReview
 }

@@ -9,9 +9,7 @@ import { IAuthUser } from "../../interface/common";
 const addReview = catchAsync(async (req, res, next) => {
 
     const user = req.user
-
     const result = await ReviewServices.addReview(user as IAuthUser, req.body)
-
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
@@ -22,8 +20,38 @@ const addReview = catchAsync(async (req, res, next) => {
 })
 
 
+const editReview = catchAsync(async (req, res, next) => {
+
+    const user = req.user
+    const reviewId = req.params.id
+    const result = await ReviewServices.editReview(user as IAuthUser, reviewId, req.body)
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Review edit successfully',
+        data: result
+    })
+})
+
+
+const deleteReview = catchAsync(async (req, res, next) => {
+
+    const user = req.user
+    const reviewId = req.params.id
+    const result = await ReviewServices.deleteReview(user as IAuthUser, reviewId)
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Review delete successfully',
+        data: result
+    })
+})
+
+
 
 
 export const ReviewController = {
     addReview,
+    editReview,
+    deleteReview
 }
