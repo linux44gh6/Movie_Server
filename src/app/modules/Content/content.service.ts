@@ -2,22 +2,22 @@ import httpStatus from "http-status";
 import { apiError } from "../../errors/apiError"
 import { uploadToCloudinary } from "../../../utils"
 import { Prisma, PrismaClient } from "@prisma/client"
-const prisma=new PrismaClient()
+const prisma = new PrismaClient()
 
-const createContent=async(req:any)=>{
-   try{
-    const file=req.file
-    if(file){
-        const uploadImage=await uploadToCloudinary(file)
-        req.body.thumbnailImage=uploadImage.secure_url
+const createContent = async (req: any) => {
+    try {
+        const file = req.file
+        if (file) {
+            const uploadImage = await uploadToCloudinary(file)
+            req.body.thumbnailImage = uploadImage.secure_url
+        }
+        const content = await prisma.video.create({
+            data: req.body
+        })
+        return content
+    } catch (err) {
+        throw new apiError(httpStatus.FORBIDDEN, (err as Error).message)
     }
-    const content= await prisma.video.create({
-        data:req.body
-    })
-    return content
-   }catch(err){
-       throw new apiError(httpStatus.FORBIDDEN,(err as Error).message)
-   }
 }
 
 
@@ -26,7 +26,7 @@ interface SearchParams {
     [key: string]: any; // For dynamic field filters
 }
 
-const searchableFields = ["title", "description","director","cast","genre"];
+const searchableFields = ["title", "description", "director", "cast", "genre"];
 
 const getAllContent = async (params: SearchParams) => {
     try {
@@ -75,7 +75,7 @@ const getAllContent = async (params: SearchParams) => {
         throw new apiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
     }
 };
-export const contentService={
+export const contentService = {
     createContent,
     getAllContent
 }

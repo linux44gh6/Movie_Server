@@ -1,17 +1,17 @@
 import express from 'express';
 import { contentController } from './content.controller';
-import { upload,} from '../../../utils';
+import { upload, } from '../../../utils';
 import { auth } from '../../interface/auth';
 import { UserRole } from '@prisma/client';
- const router=express.Router();
+const router = express.Router();
 
-router.get('/',contentController.getAllContent)
+router.get('/', contentController.getAllContent)
 
- router.post('/',upload.single('file'),
- auth(UserRole.ADMIN,UserRole.USER),
- (req,res,next)=>{
-    req.body=JSON.parse(req.body.data);
-    return contentController.createContent(req,res,next);
- }
- )
- export const ContentRouter=router;
+router.post('/', upload.single('file'),
+   auth(UserRole.ADMIN, UserRole.USER),
+   (req, res, next) => {
+      req.body = JSON.parse(req.body.data);
+      return contentController.createContent(req, res, next);
+   }
+)
+export const ContentRouter = router;

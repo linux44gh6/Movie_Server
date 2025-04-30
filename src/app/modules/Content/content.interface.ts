@@ -1,20 +1,19 @@
 export interface IContent {
-    id: string;
-    title: string;
-    genre: string;
-    thumbnailImage?: string; 
-    video?: string; 
-    director: string;
-    releaseYear: number;
-    cast: string;
-    streamingPlatform: string;
-    description: string;
-    like: number;
-    price: number;
-    rating: number;
-    dislike: number;
-    createdAt: Date;
-    updatedAt: Date;
-    userId: string;
-  }
-  
+  id: string;
+  title: string;
+  genre: string;
+  thumbnailImage?: string;
+  video?: string;
+  director: string;
+  releaseYear: number;
+  cast: string;
+  streamingPlatform: string;
+  description: string;
+  like: number;
+  price: number;
+  rating: number;
+  dislike: number;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+}

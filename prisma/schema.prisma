@@ -79,10 +79,12 @@ model Review {
   video   Video  @relation(fields: [videoId], references: [id])
 
   content   String
-  isSpoiler Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  like      Like[]
-  Comment   Comment[]
+  createdAt DateTime @default(now())
+
+  isApproved Boolean @default(false)
+
+  like    Like[]
+  Comment Comment[]
 
   @@map("reviews")
 }
@@ -95,6 +97,8 @@ model Comment {
 
   reviewId String
   review   Review @relation(fields: [reviewId], references: [id])
+
+  isApproved Boolean @default(false)
 
   content  String
   createAt DateTime @default(now())
