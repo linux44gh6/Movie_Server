@@ -15,7 +15,19 @@ const likeVideo = catchAsync(async (req, res, next) => {
     });
 });
 
+const unlikeVideo = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    const result = await LikeServices.unlikeVideo(user as IAuthUser, req.body);
+    sendResponse(res, {
+        statuscode: httpStatus.CREATED,
+        success: true,
+        message: 'Video un like successfully',
+        data: result,
+    });
+});
+
 
 export const LikeController = {
     likeVideo,
+    unlikeVideo
 };
