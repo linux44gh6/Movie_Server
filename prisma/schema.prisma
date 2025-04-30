@@ -23,6 +23,7 @@ model User {
   Comment   Comment[]
   WatchList WatchList[]
   Purchase  Purchase[]
+
   @@map("user")
 }
 
@@ -50,6 +51,7 @@ model Video {
   Review    Review[]
   WatchList WatchList[]
   Purchase  Purchase[]
+  Comment   Comment[]
 
   @@map("video")
 }
@@ -83,8 +85,7 @@ model Review {
 
   isApproved Boolean @default(false)
 
-  like    Like[]
-  Comment Comment[]
+  like Like[]
 
   @@map("reviews")
 }
@@ -95,8 +96,8 @@ model Comment {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id])
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
 
   isApproved Boolean @default(false)
 
