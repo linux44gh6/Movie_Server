@@ -23,7 +23,6 @@ model User {
   Comment   Comment[]
   WatchList WatchList[]
   Purchase  Purchase[]
-
   @@map("user")
 }
 

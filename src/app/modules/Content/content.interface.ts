@@ -17,3 +17,8 @@ export interface IContent {
   updatedAt: Date;
   userId: string;
 }
+
+export interface SearchParams {
+  searchTerm?: string;
+  [key: string]: any; // For dynamic field filters
+}
