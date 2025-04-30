@@ -48,9 +48,11 @@ model Video {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  Review    Review[]
-  WatchList WatchList[]
-  Purchase  Purchase[]
+  review    Review[]
+  watchList WatchList[]
+  purchase  Purchase[]
+  comment   Comment[]
+  Like      Like[]
 
   @@map("video")
 }
@@ -61,8 +63,8 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id])
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -84,9 +86,6 @@ model Review {
 
   isApproved Boolean @default(false)
 
-  like    Like[]
-  Comment Comment[]
-
   @@map("reviews")
 }
 
@@ -96,8 +95,8 @@ model Comment {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  reviewId String
-  review   Review @relation(fields: [reviewId], references: [id])
+  videoId String
+  video   Video  @relation(fields: [videoId], references: [id])
 
   isApproved Boolean @default(false)
 
