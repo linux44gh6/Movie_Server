@@ -16,7 +16,6 @@ const addComments = catchAsync(async (req, res, next) => {
 });
 
 const getAllComment = catchAsync(async (req, res, next) => {
-    const reviewId = req.params.id;
     const result = await CommentServices.getAllComment();
     sendResponse(res, {
         statuscode: httpStatus.OK,
@@ -26,7 +25,20 @@ const getAllComment = catchAsync(async (req, res, next) => {
     });
 });
 
+const editComment = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    const commentId = req.params.id;
+    const result = await CommentServices.editComment(user as IAuthUser, commentId, req.body);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Review edit successfully',
+        data: result,
+    });
+});
+
 export const CommentController = {
     addComments,
-    getAllComment
+    getAllComment,
+    editComment
 };
