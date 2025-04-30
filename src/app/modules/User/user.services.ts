@@ -1,10 +1,9 @@
 import prisma from "../../../helpers/prisma"
 import bcrypt from 'bcrypt'
 
-
 const createUser = async (payload: any) => {
 
-    const existingUser = await prisma.users.findFirst({
+    const existingUser = await prisma.user.findFirst({
         where: {
             email: payload.email
         }
@@ -14,7 +13,7 @@ const createUser = async (payload: any) => {
     }
 
     const hashPassword: string = await bcrypt.hash(payload.password, 12)
-    const result = await prisma.users.create({
+    const result = await prisma.user.create({
         data: {
             ...payload,
             password: hashPassword
