@@ -1,7 +1,7 @@
 import express from 'express';
 import { contentController } from './content.controller';
 import { upload, } from '../../../utils';
-import { auth } from '../../interface/auth';
+import { auth } from '../../middlewares/auth';
 import { UserRole } from '@prisma/client';
 const router = express.Router();
 
