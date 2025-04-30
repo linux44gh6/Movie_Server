@@ -1,7 +1,7 @@
 import httpStatus from "http-status";
-import { apiError } from "../../errors/apiError"
 import { uploadToCloudinary } from "../../../utils"
 import { Prisma, PrismaClient } from "@prisma/client"
+import ApiError from "../../errors/ApiError";
 const prisma = new PrismaClient()
 
 const createContent = async (req: any) => {
@@ -16,7 +16,7 @@ const createContent = async (req: any) => {
         })
         return content
     } catch (err) {
-        throw new apiError(httpStatus.FORBIDDEN, (err as Error).message)
+        throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message)
     }
 }
 
@@ -72,7 +72,7 @@ const getAllContent = async (params: SearchParams) => {
     } catch (err) {
         const error = err instanceof Error ? err : new Error('Database operation failed');
         // More appropriate status code for database errors
-        throw new apiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
     }
 };
 export const contentService = {

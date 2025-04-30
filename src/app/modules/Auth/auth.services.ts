@@ -5,6 +5,8 @@ import prisma from "../../../helpers/prisma"
 import bcrypt from 'bcrypt'
 import { sendEmail } from "../../../utils/sendEmail"
 
+import httpStatus from "http-status";
+import ApiError from "../../errors/ApiError"
 const loginUser = async (payload: any) => {
 
     const userData = await prisma.user.findFirstOrThrow({
@@ -56,7 +58,35 @@ const forgetPassword = async (payload: { email: string }) => {
     return res
 }
 
+const resetPassword = async (token: string, payload: { id: string, password: string }) => {
+    await prisma.user.findFirstOrThrow({
+        where: {
+            id: payload.id,
+            isDeleted: false
+        }
+    })
+
+    const isValidToken = jwtHelpers.verifyToken(token, config.jwt.reset_password_secret as Secret)
+    if (!isValidToken) {
+        throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorization')
+    }
+
+    const hashPassword: string = await bcrypt.hash(payload.password, 12)
+    await prisma.user.update({
+        where: {
+            id: payload.id
+        },
+        data: {
+            password: hashPassword
+        }
+    })
+    return {
+        message: 'Password reset successfully'
+    }
+}
+
 export const AuthServices = {
     loginUser,
-    forgetPassword
+    forgetPassword,
+    resetPassword
 }
