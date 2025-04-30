@@ -2,9 +2,8 @@ import prisma from "../../../helpers/prisma";
 import ApiError from "../../errors/apiError";
 import { IAuthUser } from "../../interface/common";
 
-
 const likeVideo = async (user: IAuthUser, payload: any) => {
-    
+
     const result = await prisma.$transaction(async (tx) => {
         const userData = await tx.user.findFirstOrThrow({
             where: {
@@ -36,18 +35,34 @@ const likeVideo = async (user: IAuthUser, payload: any) => {
             };
         }
 
-        return await tx.like.create({
+        await tx.like.create({
             data: {
                 userId: userData.id,
                 videoId: existingVideo.id
             }
         });
+
+        await tx.video.update({
+            where: {
+                id: existingVideo.id
+            },
+            data: {
+                like: {
+                    increment: 1
+                }
+            }
+        });
+
+        return {
+            message: 'Successfully liked the video',
+            videoId: existingVideo.id,
+            likeCount: existingVideo.like + 1
+        };
     });
 
     return result;
 };
 
-
 export const LikeServices = {
     likeVideo
-}
+};
