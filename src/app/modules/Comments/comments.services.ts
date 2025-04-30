@@ -103,9 +103,21 @@ const deleteComment = async (user: IAuthUser, commentId: string) => {
     return result;
 };
 
+const getSingleComment = async (commentId: string) => {
+
+    const result = await prisma.comment.findFirstOrThrow({
+        where: {
+            id: commentId,
+        },
+    });
+
+    return result;
+};
+
 export const CommentServices = {
     addComments,
     getAllComment,
     editComment,
-    deleteComment
+    deleteComment,
+     getSingleComment
 }
