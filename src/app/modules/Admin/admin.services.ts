@@ -1,6 +1,5 @@
-import { ReviewStatus } from "@prisma/client"
+import { CommentStatus, ReviewStatus } from "@prisma/client"
 import prisma from "../../../helpers/prisma"
-
 
 const approveOrUnpublishReview = async (reviewId: string, payload: { status: ReviewStatus }) => {
 
@@ -21,7 +20,8 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
 
     return result
 }
-const approveOrUnpublishComment = async (commentId: string, payload: { status: ReviewStatus }) => {
+
+const approveOrUnpublishComment = async (commentId: string, payload: { status: CommentStatus }) => {
 
     await prisma.comment.findFirstOrThrow({
         where: {
@@ -40,9 +40,26 @@ const approveOrUnpublishComment = async (commentId: string, payload: { status: R
 
     return result
 }
+const removeInappropriateReview = async (reviewId: string) => {
+
+    await prisma.comment.findFirstOrThrow({
+        where: {
+            id: reviewId
+        }
+    })
+
+    const result = await prisma.comment.delete({
+        where: {
+            id: reviewId
+        }
+    })
+
+    return result
+}
 
 
 export const AdminServices = {
     approveOrUnpublishReview,
-    approveOrUnpublishComment
+    approveOrUnpublishComment,
+    removeInappropriateReview
 }

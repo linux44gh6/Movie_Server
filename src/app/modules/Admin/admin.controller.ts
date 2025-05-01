@@ -29,8 +29,22 @@ const approveOrUnpublishComment = catchAsync(async (req, res, next) => {
     });
 });
 
+const removeInappropriateReview = catchAsync(async (req, res, next) => {
+
+    const reviewId = req.params.id
+    const result = await AdminServices.removeInappropriateReview(reviewId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment has been successfully deleted.',
+        data: result
+    });
+});
+
 
 export const AdminController = {
     approveOrUnpublishReview,
-    approveOrUnpublishComment
+    approveOrUnpublishComment,
+    removeInappropriateReview
 };
