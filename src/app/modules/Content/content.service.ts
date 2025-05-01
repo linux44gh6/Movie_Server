@@ -176,10 +176,32 @@ const deleteContent = async (id: string) => {
   }
 };
 
+const contentGetCategory = async () => {
+  try {
+    const content = await prisma.video.findMany({
+      where: {
+        category: {
+          equals: "SERIES",
+          // mode:"insensitive"
+        }
+      }
+    });
+
+    return content;
+  } catch (err) {
+    console.log(err);
+    throw new ApiError(
+      httpStatus.INTERNAL_SERVER_ERROR,
+      'Failed to fetch videos by category'
+    );
+  }
+};
+
 export const contentService = {
   createContent,
   getAllContent,
   updateContent,
   deleteContent,
   getContentById,
+  contentGetCategory,
 };

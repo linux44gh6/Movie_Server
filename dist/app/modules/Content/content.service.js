@@ -188,10 +188,28 @@ const deleteContent = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
+const contentGetCategory = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const content = yield prisma.video.findMany({
+            where: {
+                category: {
+                    equals: "SERIES",
+                    // mode:"insensitive"
+                }
+            }
+        });
+        return content;
+    }
+    catch (err) {
+        console.log(err);
+        throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to fetch videos by category');
+    }
+});
 exports.contentService = {
     createContent,
     getAllContent,
     updateContent,
     deleteContent,
     getContentById,
+    contentGetCategory,
 };

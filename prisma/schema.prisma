@@ -23,6 +23,7 @@ model User {
   Comment   Comment[]
   WatchList WatchList[]
   Purchase  Purchase[]
+  Payment   Payment[]
 
   @@map("user")
 }
@@ -89,13 +90,30 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
- like              Int?        @default(0)
+  like Int? @default(0)
 
   status  ReviewStatus @default(PENDING)
   Comment Comment[]
   Like    Like[]
 
   @@map("reviews")
+}
+
+model Payment {
+  id            String   @id @default(uuid())
+  tran_id       String   @unique
+  total_amount  Float
+  cus_name      String
+  cus_email     String
+  cus_phone     String
+  cus_add1      String
+  paymentStatus Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@map("payments")
 }
 
 model Comment {
