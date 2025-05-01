@@ -11,12 +11,16 @@ const prisma = new PrismaClient();
 const createContent = async (req: any) => {
   try {
     const file = req.file;
+    const user = req.user
     if (file) {
       const uploadImage = await uploadToCloudinary(file);
       req.body.thumbnailImage = uploadImage.secure_url;
     }
     const content = await prisma.video.create({
-      data: req.body,
+      data: {
+        ...req.body,
+        userId: user.id
+      },
     });
     return content;
   } catch (err) {

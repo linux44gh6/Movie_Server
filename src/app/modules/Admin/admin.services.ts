@@ -2,7 +2,7 @@ import { ReviewStatus } from "@prisma/client"
 import prisma from "../../../helpers/prisma"
 
 
-const approveOrUnpublishReview = async (reviewId: string, approve: ReviewStatus) => {
+const approveOrUnpublishReview = async (reviewId: string, payload: { status: ReviewStatus }) => {
 
     await prisma.review.findFirstOrThrow({
         where: {
@@ -10,12 +10,13 @@ const approveOrUnpublishReview = async (reviewId: string, approve: ReviewStatus)
         }
     })
 
+
     const result = await prisma.review.update({
         where: {
             id: reviewId
         },
         data: {
-            status: approve
+            status: payload.status
         }
     })
 
