@@ -26,6 +26,9 @@ CREATE TABLE "video" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "genre" TEXT NOT NULL,
+    "duration" TEXT,
+    "category" TEXT NOT NULL DEFAULT 'movie',
+    "language" TEXT,
     "thumbnailImage" TEXT,
     "video" TEXT,
     "director" TEXT NOT NULL,
@@ -48,7 +51,7 @@ CREATE TABLE "video" (
 CREATE TABLE "likes" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "reviewId" TEXT NOT NULL,
+    "videoId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
@@ -71,7 +74,7 @@ CREATE TABLE "reviews" (
 CREATE TABLE "comments" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "reviewId" TEXT NOT NULL,
+    "videoId" TEXT NOT NULL,
     "isApproved" BOOLEAN NOT NULL DEFAULT false,
     "content" TEXT NOT NULL,
     "createAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -102,8 +105,28 @@ CREATE TABLE "purchases" (
     CONSTRAINT "purchases_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "payments" (
+    "id" TEXT NOT NULL,
+    "tran_id" TEXT NOT NULL,
+    "total_amount" DOUBLE PRECISION NOT NULL,
+    "cus_name" TEXT NOT NULL,
+    "cus_email" TEXT NOT NULL,
+    "cus_phone" TEXT NOT NULL,
+    "cus_add1" TEXT NOT NULL,
+    "paymentStatus" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "payments_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "payments_tran_id_key" ON "payments"("tran_id");
 
 -- AddForeignKey
 ALTER TABLE "video" ADD CONSTRAINT "video_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -112,7 +135,7 @@ ALTER TABLE "video" ADD CONSTRAINT "video_userId_fkey" FOREIGN KEY ("userId") RE
 ALTER TABLE "likes" ADD CONSTRAINT "likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "likes" ADD CONSTRAINT "likes_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "likes" ADD CONSTRAINT "likes_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -124,7 +147,7 @@ ALTER TABLE "reviews" ADD CONSTRAINT "reviews_videoId_fkey" FOREIGN KEY ("videoI
 ALTER TABLE "comments" ADD CONSTRAINT "comments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comments" ADD CONSTRAINT "comments_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "comments" ADD CONSTRAINT "comments_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "watch-list" ADD CONSTRAINT "watch-list_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -137,3 +160,6 @@ ALTER TABLE "purchases" ADD CONSTRAINT "purchases_userId_fkey" FOREIGN KEY ("use
 
 -- AddForeignKey
 ALTER TABLE "purchases" ADD CONSTRAINT "purchases_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "payments" ADD CONSTRAINT "payments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

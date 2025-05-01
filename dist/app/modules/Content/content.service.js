@@ -37,6 +37,7 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
             const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
             req.body.thumbnailImage = uploadImage.secure_url;
         }
+        req.body.userId = req.user.id;
         const content = yield prisma.video.create({
             data: req.body,
         });
@@ -154,10 +155,28 @@ const deleteContent = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
+const contentGetCategory = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const content = yield prisma.video.findMany({
+            where: {
+                category: {
+                    equals: "series",
+                    mode: "insensitive"
+                }
+            }
+        });
+        return content;
+    }
+    catch (err) {
+        console.log(err);
+        throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to fetch videos by category');
+    }
+});
 exports.contentService = {
     createContent,
     getAllContent,
     updateContent,
     deleteContent,
     getContentById,
+    contentGetCategory,
 };
