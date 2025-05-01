@@ -6,9 +6,11 @@ import { CommentStatus } from "@prisma/client";
 
 
 const addComments = async (user: any, payload: any) => {
+
     if (!user) {
         throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated or doesn't exist");
     }
+
     const userData = await prisma.user.findFirstOrThrow({
         where: {
             email: user.email,
@@ -16,12 +18,37 @@ const addComments = async (user: any, payload: any) => {
         },
     });
 
-
     await prisma.video.findFirstOrThrow({
         where: {
             id: payload.videoId,
         },
     });
+
+    if (!payload.parentCommentId) {
+
+        const result = await prisma.comment.create({
+            data: {
+                ...payload,
+                userId: userData.id,
+            },
+        });
+
+        return result;
+    }
+
+    const parentComment = await prisma.comment.findUnique({
+        where: {
+            id: payload.parentCommentId,
+        },
+    });
+
+    if (!parentComment) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Parent comment not found.");
+    }
+
+    if (parentComment.videoId !== payload.videoId) {
+        throw new ApiError(httpStatus.BAD_REQUEST, "Parent comment does not belong to this video.");
+    }
 
     const result = await prisma.comment.create({
         data: {

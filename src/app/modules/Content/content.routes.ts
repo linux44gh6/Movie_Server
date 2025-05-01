@@ -9,7 +9,7 @@ router.get('/', contentController.getAllContent);
 
 router.get('/:id', contentController.getSingleContent);
 
-router.post('/', upload.single('file'), auth(UserRole.ADMIN), (req, res, next) => {
+router.post('/', auth(UserRole.ADMIN), upload.single('file'), (req, res, next) => {
   req.body = JSON.parse(req.body.data);
   return contentController.createContent(req, res, next);
 });

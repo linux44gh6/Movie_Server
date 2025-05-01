@@ -85,28 +85,30 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-   status ReviewStatus @default(PENDING)
+  status ReviewStatus @default(PENDING)
 
   @@map("reviews")
 }
 
 model Comment {
-  id String @id @default(uuid())
+  id        String        @id @default(uuid())
+  userId    String
+  user      User          @relation(fields: [userId], references: [id])
+  videoId   String
+  video     Video         @relation(fields: [videoId], references: [id])
+  status    CommentStatus @default(PENDING)
+  content   String
+  createdAt DateTime      @default(now())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  // Parent comment reference for nested threads (nullable)
+  parentCommentId String?
+  parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
-
-  status CommentStatus @default(PENDING)
-
-  content  String
-  createAt DateTime @default(now())
+  // Replies to this comment (if any)
+  replies Comment[] @relation("CommentReplies")
 
   @@map("comments")
 }
-
 
 model WatchList {
   id String @id @default(uuid())
@@ -144,12 +146,12 @@ enum ReviewStatus {
   APPROVED
   REJECTED
 }
+
 enum CommentStatus {
   PENDING
   APPROVED
   REJECTED
 }
-
 
 enum Category {
   MOVIE
