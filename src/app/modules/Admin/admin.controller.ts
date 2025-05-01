@@ -16,7 +16,21 @@ const approveOrUnpublishReview = catchAsync(async (req, res, next) => {
     });
 });
 
+const approveOrUnpublishComment = catchAsync(async (req, res, next) => {
+
+    const commentId = req.params.id
+    const result = await AdminServices.approveOrUnpublishComment(commentId, req.body);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment status has been successfully updated.',
+        data: result
+    });
+});
+
 
 export const AdminController = {
-    approveOrUnpublishReview
+    approveOrUnpublishReview,
+    approveOrUnpublishComment
 };

@@ -10,7 +10,6 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
         }
     })
 
-
     const result = await prisma.review.update({
         where: {
             id: reviewId
@@ -22,8 +21,28 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
 
     return result
 }
+const approveOrUnpublishComment = async (commentId: string, payload: { status: ReviewStatus }) => {
+
+    await prisma.comment.findFirstOrThrow({
+        where: {
+            id: commentId
+        }
+    })
+
+    const result = await prisma.comment.update({
+        where: {
+            id: commentId
+        },
+        data: {
+            status: payload.status
+        }
+    })
+
+    return result
+}
 
 
 export const AdminServices = {
-    approveOrUnpublishReview
+    approveOrUnpublishReview,
+    approveOrUnpublishComment
 }
