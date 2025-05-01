@@ -56,10 +56,27 @@ const removeInappropriateReview = async (reviewId: string) => {
 
     return result
 }
+const removeInappropriateComment = async (commentId: string) => {
+
+    await prisma.comment.findFirstOrThrow({
+        where: {
+            id: commentId
+        }
+    })
+
+    const result = await prisma.comment.delete({
+        where: {
+            id: commentId
+        }
+    })
+
+    return result
+}
 
 
 export const AdminServices = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
-    removeInappropriateReview
+    removeInappropriateReview,
+    removeInappropriateComment
 }
