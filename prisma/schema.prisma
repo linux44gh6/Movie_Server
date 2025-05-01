@@ -52,8 +52,8 @@ model Video {
   review    Review[]
   watchList WatchList[]
   purchase  Purchase[]
-  comment   Comment[]
   Like      Like[]
+  Comment   Comment[]
 
   @@map("video")
 }
@@ -85,26 +85,30 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-  status ReviewStatus @default(PENDING)
+  status  ReviewStatus @default(PENDING)
+  Comment Comment[]
 
   @@map("reviews")
 }
 
 model Comment {
-  id        String        @id @default(uuid())
-  userId    String
-  user      User          @relation(fields: [userId], references: [id])
-  videoId   String
-  video     Video         @relation(fields: [videoId], references: [id])
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
+
   status    CommentStatus @default(PENDING)
   content   String
   createdAt DateTime      @default(now())
 
-  // Parent comment reference for nested threads (nullable)
+  reviewId String? 
+  review   Review? @relation(fields: [reviewId], references: [id])
+
   parentCommentId String?
   parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
 
-  // Replies to this comment (if any)
   replies Comment[] @relation("CommentReplies")
 
   @@map("comments")

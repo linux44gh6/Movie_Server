@@ -66,7 +66,7 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
       take: limit,
       orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
       include: {
-        comment: {
+        Comment: {
           where: {
             status: {
               in: ['APPROVED']
@@ -135,7 +135,7 @@ const getContentById = async (id: string) => {
     const content = await prisma.video.findUnique({
       where: { id },
       include: {
-        comment: {
+        Comment: {
           where: {
             status: {
               in: ['APPROVED']
