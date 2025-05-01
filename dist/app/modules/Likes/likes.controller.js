@@ -33,11 +33,33 @@ const unlikeVideo = (0, catchAsync_1.default)((req, res, next) => __awaiter(void
     (0, sendResponse_1.default)(res, {
         statuscode: http_status_1.default.CREATED,
         success: true,
-        message: 'Video un like successfully',
+        message: 'Video unlike successfully',
+        data: result,
+    });
+}));
+const likeReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield likes_services_1.LikeServices.likeReview(user, req.body);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.CREATED,
+        success: true,
+        message: 'Review like successfully',
+        data: result,
+    });
+}));
+const unlikeReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = req.user;
+    const result = yield likes_services_1.LikeServices.unlikeReview(user, req.body);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.CREATED,
+        success: true,
+        message: 'Review unlike successfully',
         data: result,
     });
 }));
 exports.LikeController = {
     likeVideo,
-    unlikeVideo
+    unlikeVideo,
+    likeReview,
+    unlikeReview
 };

@@ -12,7 +12,7 @@ const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
 router.get('/', content_controller_1.contentController.getAllContent);
 router.get('/:id', content_controller_1.contentController.getSingleContent);
-router.post('/', utils_1.upload.single('file'), (0, auth_1.auth)(client_1.UserRole.ADMIN), (req, res, next) => {
+router.post('/', (0, auth_1.auth)(client_1.UserRole.ADMIN), utils_1.upload.single('file'), (req, res, next) => {
     req.body = JSON.parse(req.body.data);
     return content_controller_1.contentController.createContent(req, res, next);
 });

@@ -79,19 +79,20 @@ const getAverageRating = async (videoId: string) => {
         where: {
             id: videoId
         }
-    })
+    });
 
-    const result = await prisma.video.aggregate({
+    const result = await prisma.review.aggregate({
         where: {
-            id: videoId
+            videoId: videoId
         },
         _avg: {
             rating: true
         }
-    })
+    });
 
-    return result
-}
+    return result;
+};
+
 const getMostReviewedTitle = async () => {
     const result = await prisma.video.findMany({
         orderBy: {
@@ -105,7 +106,7 @@ const getMostReviewedTitle = async () => {
             title: true,
             _count: {
                 select: {
-                    review: true 
+                    review: true
                 }
             }
         }
