@@ -8,6 +8,8 @@ import { PurchasesRoutes } from '../modules/Purchases/purchases.routes';
 import { ReviewRoutes } from '../modules/Reviews/reviews.routes';
 import { WatchListRoutes } from '../modules/WatchList/watchList.routes';
 import { AdminRoute } from '../modules/Admin/admin.routes';
+import { paymentRouter } from '../modules/Payment/payment.routes';
+
 
 const router = express.Router();
 
@@ -48,6 +50,10 @@ const modulesRoute = [
     path: '/admin',
     route: AdminRoute,
   },
+  {
+    path: '/payment',
+    route:paymentRouter
+  }
 ];
 
 modulesRoute.forEach((route) => {

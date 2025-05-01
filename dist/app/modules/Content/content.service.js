@@ -33,12 +33,14 @@ const prisma = new client_1.PrismaClient();
 const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const file = req.file;
+        const user = req.user;
         if (file) {
             const uploadImage = yield (0, utils_1.uploadToCloudinary)(file);
             req.body.thumbnailImage = uploadImage.secure_url;
         }
+        console.log(req.body);
         const content = yield prisma.video.create({
-            data: req.body,
+            data: Object.assign(Object.assign({}, req.body), { userId: user.id }),
         });
         return content;
     }
@@ -79,6 +81,22 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             skip,
             take: limit,
             orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
+            include: {
+                Comment: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                },
+                review: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                }
+            }
         });
         return {
             meta: {
@@ -130,6 +148,22 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
         }
         const content = yield prisma.video.findUnique({
             where: { id },
+            include: {
+                Comment: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                },
+                review: {
+                    where: {
+                        status: {
+                            in: ['APPROVED']
+                        }
+                    }
+                }
+            }
         });
         return content;
     }
@@ -154,10 +188,28 @@ const deleteContent = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
+const contentGetCategory = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const content = yield prisma.video.findMany({
+            where: {
+                category: {
+                    equals: "SERIES",
+                    // mode:"insensitive"
+                }
+            }
+        });
+        return content;
+    }
+    catch (err) {
+        console.log(err);
+        throw new apiError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to fetch videos by category');
+    }
+});
 exports.contentService = {
     createContent,
     getAllContent,
     updateContent,
     deleteContent,
     getContentById,
+    contentGetCategory,
 };

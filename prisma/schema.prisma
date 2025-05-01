@@ -23,6 +23,7 @@ model User {
   Comment   Comment[]
   WatchList WatchList[]
   Purchase  Purchase[]
+  Payment   Payment[]
 
   @@map("user")
 }
@@ -39,10 +40,9 @@ model Video {
   cast              String
   streamingPlatform String
   description       String
-  like              Int         @default(0)
+  like              Int?        @default(0)
   price             Float
-  rating            Float
-  dislike           Int         @default(0)
+  dislike           Int?        @default(0)
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
@@ -52,7 +52,7 @@ model Video {
   review    Review[]
   watchList WatchList[]
   purchase  Purchase[]
-  comment   Comment[]
+  Comment   Comment[]
   Like      Like[]
 
   @@map("video")
@@ -64,11 +64,16 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
+
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
 
   createdAt DateTime @default(now())
 
+  @@unique([userId, videoId])
+  @@unique([userId, reviewId])
   @@map("likes")
 }
 
@@ -85,28 +90,54 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-   status ReviewStatus @default(PENDING)
+  like Int? @default(0)
+
+  status  ReviewStatus @default(PENDING)
+  Comment Comment[]
+  Like    Like[]
 
   @@map("reviews")
 }
 
-model Comment {
-  id String @id @default(uuid())
+model Payment {
+  id            String   @id @default(uuid())
+  tran_id       String   @unique
+  total_amount  Float
+  cus_name      String
+  cus_email     String
+  cus_phone     String
+  cus_add1      String
+  paymentStatus Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
 
+  @@map("payments")
+}
+
+model Comment {
+  id     String @id @default(uuid())
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
 
-  status CommentStatus @default(PENDING)
+  status    CommentStatus @default(PENDING)
+  content   String
+  createdAt DateTime      @default(now())
 
-  content  String
-  createAt DateTime @default(now())
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
+
+  parentCommentId String?
+  parentComment   Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id])
+
+  replies Comment[] @relation("CommentReplies")
 
   @@map("comments")
 }
-
 
 model WatchList {
   id String @id @default(uuid())
@@ -144,12 +175,12 @@ enum ReviewStatus {
   APPROVED
   REJECTED
 }
+
 enum CommentStatus {
   PENDING
   APPROVED
   REJECTED
 }
-
 
 enum Category {
   MOVIE
