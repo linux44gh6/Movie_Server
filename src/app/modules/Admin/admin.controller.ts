@@ -1,23 +1,36 @@
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
+import { AdminServices } from './admin.services';
 
-const loginUser = catchAsync(async (req, res, next) => {
-    // const result = await AdminServices.loginUser(req.body);
+const approveOrUnpublishReview = catchAsync(async (req, res, next) => {
 
-    // const { refreshToken, accessToken } = result;
+    const reviewId = req.params.id
+    const result = await AdminServices.approveOrUnpublishReview(reviewId, req.body);
 
-    // res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true });
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Review status has been successfully updated.',
+        data: result
+    });
+});
 
-    // sendResponse(res, {
-    //     statuscode: httpStatus.OK,
-    //     success: true,
-    //     message: 'User login successfully',
-    //     data: { accessToken },
-    // });
+const approveOrUnpublishComment = catchAsync(async (req, res, next) => {
+
+    const commentId = req.params.id
+    const result = await AdminServices.approveOrUnpublishComment(commentId, req.body);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment status has been successfully updated.',
+        data: result
+    });
 });
 
 
-export const AuthController = {
-
+export const AdminController = {
+    approveOrUnpublishReview,
+    approveOrUnpublishComment
 };
