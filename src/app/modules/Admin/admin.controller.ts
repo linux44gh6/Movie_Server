@@ -29,8 +29,63 @@ const approveOrUnpublishComment = catchAsync(async (req, res, next) => {
     });
 });
 
+const removeInappropriateReview = catchAsync(async (req, res, next) => {
+
+    const reviewId = req.params.id
+    const result = await AdminServices.removeInappropriateReview(reviewId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Review has been successfully deleted.',
+        data: result
+    });
+});
+
+const removeInappropriateComment = catchAsync(async (req, res, next) => {
+
+    const commentId = req.params.id
+    const result = await AdminServices.removeInappropriateComment(commentId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment has been successfully deleted.',
+        data: result
+    });
+});
+
+const getAverageRating = catchAsync(async (req, res, next) => {
+
+    const videoId = req.params.id
+    const result = await AdminServices.getAverageRating(videoId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Average rating has been successfully fetched.',
+        data: result
+    });
+});
+
+const getMostReviewedTitle = catchAsync(async (req, res, next) => {
+
+    const result = await AdminServices.getMostReviewedTitle();
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Most reviewed title has been successfully fetched.',
+        data: result
+    });
+});
+
 
 export const AdminController = {
     approveOrUnpublishReview,
-    approveOrUnpublishComment
+    approveOrUnpublishComment,
+    removeInappropriateReview,
+    removeInappropriateComment,
+    getAverageRating,
+    getMostReviewedTitle
 };
