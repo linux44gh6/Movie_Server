@@ -39,10 +39,9 @@ model Video {
   cast              String
   streamingPlatform String
   description       String
-  like              Int         @default(0)
+  like              Int?        @default(0)
   price             Float
-  rating            Float
-  dislike           Int         @default(0)
+  dislike           Int?        @default(0)
   createdAt         DateTime    @default(now())
   updatedAt         DateTime    @updatedAt
 
@@ -52,8 +51,8 @@ model Video {
   review    Review[]
   watchList WatchList[]
   purchase  Purchase[]
-  Like      Like[]
   Comment   Comment[]
+  Like      Like[]
 
   @@map("video")
 }
@@ -64,11 +63,16 @@ model Like {
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  videoId String
-  video   Video  @relation(fields: [videoId], references: [id])
+  videoId String?
+  video   Video?  @relation(fields: [videoId], references: [id])
+
+  reviewId String?
+  review   Review? @relation(fields: [reviewId], references: [id])
 
   createdAt DateTime @default(now())
 
+  @@unique([userId, videoId])
+  @@unique([userId, reviewId])
   @@map("likes")
 }
 
@@ -85,8 +89,11 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
+ like              Int?        @default(0)
+
   status  ReviewStatus @default(PENDING)
   Comment Comment[]
+  Like    Like[]
 
   @@map("reviews")
 }
@@ -103,7 +110,7 @@ model Comment {
   content   String
   createdAt DateTime      @default(now())
 
-  reviewId String? 
+  reviewId String?
   review   Review? @relation(fields: [reviewId], references: [id])
 
   parentCommentId String?

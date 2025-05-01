@@ -16,6 +16,8 @@ const createContent = async (req: any) => {
       const uploadImage = await uploadToCloudinary(file);
       req.body.thumbnailImage = uploadImage.secure_url;
     }
+
+    console.log(req.body)
     const content = await prisma.video.create({
       data: {
         ...req.body,
