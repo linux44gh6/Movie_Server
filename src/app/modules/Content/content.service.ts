@@ -65,6 +65,22 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
       skip,
       take: limit,
       orderBy: { [sortBy || 'createdAt']: sortOrder || 'desc' },
+      include: {
+        comment: {
+          where: {
+            status: {
+              in: ['APPROVED']
+            }
+          }
+        },
+        review: {
+          where: {
+            status: {
+              in: ['APPROVED']
+            }
+          }
+        }
+      }
     });
     return {
       meta: {
