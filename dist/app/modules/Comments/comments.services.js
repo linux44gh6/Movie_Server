@@ -16,6 +16,7 @@ exports.CommentServices = void 0;
 const prisma_1 = __importDefault(require("../../../helpers/prisma"));
 const apiError_1 = __importDefault(require("../../errors/apiError"));
 const http_status_1 = __importDefault(require("http-status"));
+const client_1 = require("@prisma/client");
 const addComments = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
     if (!user) {
         throw new apiError_1.default(http_status_1.default.UNAUTHORIZED, "User is not authenticated or doesn't exist");
@@ -53,7 +54,7 @@ const editComment = (user, commentId, payload) => __awaiter(void 0, void 0, void
     const comment = yield prisma_1.default.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            isApproved: false,
+            status: client_1.CommentStatus.PENDING,
         },
     });
     if (comment.userId !== userData.id) {
@@ -80,7 +81,7 @@ const deleteComment = (user, commentId) => __awaiter(void 0, void 0, void 0, fun
     const comment = yield prisma_1.default.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            isApproved: false,
+            status: client_1.CommentStatus.PENDING,
         },
     });
     if (comment.userId !== userData.id) {

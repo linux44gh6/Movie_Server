@@ -12,6 +12,7 @@ const likes_routes_1 = require("../modules/Likes/likes.routes");
 const purchases_routes_1 = require("../modules/Purchases/purchases.routes");
 const reviews_routes_1 = require("../modules/Reviews/reviews.routes");
 const watchList_routes_1 = require("../modules/WatchList/watchList.routes");
+const admin_routes_1 = require("../modules/Admin/admin.routes");
 const router = express_1.default.Router();
 const modulesRoute = [
     {
@@ -45,6 +46,10 @@ const modulesRoute = [
     {
         path: '/watch-list',
         route: watchList_routes_1.WatchListRoutes,
+    },
+    {
+        path: '/admin',
+        route: admin_routes_1.AdminRoute,
     },
 ];
 modulesRoute.forEach((route) => {
