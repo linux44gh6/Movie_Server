@@ -63,7 +63,7 @@ const getAverageRating = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Comment has been successfully deleted.',
+        message: 'Average rating has been successfully fetched.',
         data: result
     });
 });
@@ -75,7 +75,7 @@ const getMostReviewedTitle = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Comment has been successfully deleted.',
+        message: 'Most reviewed title has been successfully fetched.',
         data: result
     });
 });
