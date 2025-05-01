@@ -73,10 +73,31 @@ const removeInappropriateComment = async (commentId: string) => {
     return result
 }
 
+const getAverageRating = async (videoId: string) => {
+
+    await prisma.video.findFirstOrThrow({
+        where: {
+            id: videoId
+        }
+    })
+
+    const result = await prisma.video.aggregate({
+        where: {
+            id: videoId
+        },
+        _avg: {
+            rating: true
+        }
+    })
+
+    return result
+}
+
 
 export const AdminServices = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
     removeInappropriateReview,
-    removeInappropriateComment
+    removeInappropriateComment,
+    getAverageRating
 }

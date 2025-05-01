@@ -7,6 +7,7 @@ import { UserRole } from '@prisma/client'
 
 const router = express.Router()
 
+router.get('/get-aggregated-ratting/:id', auth(UserRole.ADMIN), AdminController.getAverageRating)
 router.patch('/review/:id', auth(UserRole.ADMIN), AdminController.approveOrUnpublishReview)
 router.patch('/comment/:id', auth(UserRole.ADMIN), AdminController.approveOrUnpublishComment)
 router.delete('/remove-inappropriate-review/:id', auth(UserRole.ADMIN), AdminController.removeInappropriateReview)

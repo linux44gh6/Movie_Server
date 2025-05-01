@@ -55,10 +55,24 @@ const removeInappropriateComment = catchAsync(async (req, res, next) => {
     });
 });
 
+const getAverageRating = catchAsync(async (req, res, next) => {
+
+    const videoId = req.params.id
+    const result = await AdminServices.getAverageRating(videoId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment has been successfully deleted.',
+        data: result
+    });
+});
+
 
 export const AdminController = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
     removeInappropriateReview,
-    removeInappropriateComment
+    removeInappropriateComment,
+    getAverageRating
 };
