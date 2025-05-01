@@ -85,7 +85,7 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-  isApproved Boolean @default(false)
+   status ReviewStatus @default(PENDING)
 
   @@map("reviews")
 }
@@ -99,13 +99,14 @@ model Comment {
   videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 
-  isApproved Boolean @default(false)
+  status CommentStatus @default(PENDING)
 
   content  String
   createAt DateTime @default(now())
 
   @@map("comments")
 }
+
 
 model WatchList {
   id String @id @default(uuid())
@@ -137,6 +138,18 @@ model Purchase {
 
   @@map("purchases")
 }
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 
 enum Category {
   MOVIE

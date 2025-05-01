@@ -2,6 +2,7 @@ import prisma from "../../../helpers/prisma";
 import ApiError from "../../errors/apiError";
 import httpStatus from 'http-status';
 import { IAuthUser } from "../../interface/common";
+import { CommentStatus } from "@prisma/client";
 
 
 const addComments = async (user: any, payload: any) => {
@@ -52,7 +53,7 @@ const editComment = async (user: IAuthUser, commentId: string, payload: any) => 
     const comment = await prisma.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            isApproved: false,
+            status: CommentStatus.PENDING,
         },
     });
 
@@ -86,7 +87,7 @@ const deleteComment = async (user: IAuthUser, commentId: string) => {
     const comment = await prisma.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            isApproved: false,
+            status: CommentStatus.PENDING,
         },
     });
 

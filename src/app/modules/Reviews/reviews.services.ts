@@ -1,3 +1,4 @@
+import { ReviewStatus } from '@prisma/client';
 import prisma from '../../../helpers/prisma';
 import ApiError from '../../errors/apiError';
 import { IAuthUser } from '../../interface/common';
@@ -44,7 +45,7 @@ const editReview = async (user: IAuthUser, reviewId: string, payload: any) => {
   const review = await prisma.review.findFirstOrThrow({
     where: {
       id: reviewId,
-      isApproved: false,
+      status: ReviewStatus.PENDING,
     },
   });
 
@@ -78,7 +79,7 @@ const deleteReview = async (user: IAuthUser, reviewId: string) => {
   const review = await prisma.review.findFirstOrThrow({
     where: {
       id: reviewId,
-      isApproved: false,
+      status: ReviewStatus.PENDING,
     },
   });
 

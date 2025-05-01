@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReviewServices = void 0;
+const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../../helpers/prisma"));
 const apiError_1 = __importDefault(require("../../errors/apiError"));
 const http_status_1 = __importDefault(require("http-status"));
@@ -49,7 +50,7 @@ const editReview = (user, reviewId, payload) => __awaiter(void 0, void 0, void 0
     const review = yield prisma_1.default.review.findFirstOrThrow({
         where: {
             id: reviewId,
-            isApproved: false,
+            status: client_1.ReviewStatus.PENDING,
         },
     });
     if (review.userId !== userData.id) {
@@ -76,7 +77,7 @@ const deleteReview = (user, reviewId) => __awaiter(void 0, void 0, void 0, funct
     const review = yield prisma_1.default.review.findFirstOrThrow({
         where: {
             id: reviewId,
-            isApproved: false,
+            status: client_1.ReviewStatus.PENDING,
         },
     });
     if (review.userId !== userData.id) {
