@@ -37,7 +37,7 @@ const removeInappropriateReview = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Comment has been successfully deleted.',
+        message: 'Review has been successfully deleted.',
         data: result
     });
 });
