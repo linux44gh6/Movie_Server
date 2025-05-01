@@ -68,11 +68,24 @@ const getAverageRating = catchAsync(async (req, res, next) => {
     });
 });
 
+const getMostReviewedTitle = catchAsync(async (req, res, next) => {
+
+    const result = await AdminServices.getMostReviewedTitle();
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment has been successfully deleted.',
+        data: result
+    });
+});
+
 
 export const AdminController = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
     removeInappropriateReview,
     removeInappropriateComment,
-    getAverageRating
+    getAverageRating,
+    getMostReviewedTitle
 };

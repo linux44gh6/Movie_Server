@@ -92,6 +92,27 @@ const getAverageRating = async (videoId: string) => {
 
     return result
 }
+const getMostReviewedTitle = async () => {
+    const result = await prisma.video.findMany({
+        orderBy: {
+            review: {
+                _count: 'desc',
+            }
+        },
+        take: 10,
+        select: {
+            id: true,
+            title: true,
+            _count: {
+                select: {
+                    review: true 
+                }
+            }
+        }
+    });
+
+    return result;
+};
 
 
 export const AdminServices = {
@@ -99,5 +120,6 @@ export const AdminServices = {
     approveOrUnpublishComment,
     removeInappropriateReview,
     removeInappropriateComment,
-    getAverageRating
+    getAverageRating,
+    getMostReviewedTitle
 }
