@@ -134,6 +134,22 @@ const getContentById = async (id: string) => {
     }
     const content = await prisma.video.findUnique({
       where: { id },
+      include: {
+        comment: {
+          where: {
+            status: {
+              in: ['APPROVED']
+            }
+          }
+        },
+        review: {
+          where: {
+            status: {
+              in: ['APPROVED']
+            }
+          }
+        }
+      }
     });
     return content;
   } catch (err) {
