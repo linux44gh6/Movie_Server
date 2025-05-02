@@ -90,11 +90,13 @@ model Review {
   content   String
   createdAt DateTime @default(now())
 
-  like Int? @default(0)
+  like       Int?    @default(0)
+  hasSpoiler Boolean @default(false)
 
-  status  ReviewStatus @default(PENDING)
-  Comment Comment[]
-  Like    Like[]
+  status    ReviewStatus @default(PENDING)
+  Comment   Comment[]
+  Like      Like[]
+  ReviewTag ReviewTag[]
 
   @@map("reviews")
 }
@@ -168,6 +170,25 @@ model Purchase {
   createAt  DateTime     @default(now())
 
   @@map("purchases")
+}
+
+model Tag {
+  id         String      @id @default(uuid())
+  name       String      @unique
+  reviewTags ReviewTag[]
+
+  @@map("tags")
+}
+
+model ReviewTag {
+  reviewId String
+  tagId    String
+
+  review Review @relation(fields: [reviewId], references: [id])
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([reviewId, tagId])
+  @@map("review_tags")
 }
 
 enum ReviewStatus {
