@@ -54,6 +54,7 @@ model Video {
   purchase  Purchase[]
   Comment   Comment[]
   Like      Like[]
+  VideoTag  VideoTag[]
 
   @@map("video")
 }
@@ -93,10 +94,9 @@ model Review {
   like       Int?    @default(0)
   hasSpoiler Boolean @default(false)
 
-  status    ReviewStatus @default(PENDING)
-  Comment   Comment[]
-  Like      Like[]
-  ReviewTag ReviewTag[]
+  status  ReviewStatus @default(PENDING)
+  Comment Comment[]
+  Like    Like[]
 
   @@map("reviews")
 }
@@ -173,22 +173,22 @@ model Purchase {
 }
 
 model Tag {
-  id         String      @id @default(uuid())
-  name       String      @unique
-  reviewTags ReviewTag[]
+  id        String     @id @default(uuid())
+  name      String     @unique
+  videoTags VideoTag[] // Change to videoTags instead of reviewTags
 
   @@map("tags")
 }
 
-model ReviewTag {
-  reviewId String
-  tagId    String
+model VideoTag {
+  videoId String
+  tagId   String
 
-  review Review @relation(fields: [reviewId], references: [id])
-  tag    Tag    @relation(fields: [tagId], references: [id])
+  video Video @relation(fields: [videoId], references: [id])
+  tag   Tag   @relation(fields: [tagId], references: [id])
 
-  @@id([reviewId, tagId])
-  @@map("review_tags")
+  @@id([videoId, tagId])
+  @@map("video_tags")
 }
 
 enum ReviewStatus {

@@ -81,6 +81,11 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
               in: ['APPROVED']
             }
           }
+        },
+        VideoTag: {
+          select: {
+            tag: true
+          }
         }
       }
     });
@@ -149,6 +154,11 @@ const getContentById = async (id: string) => {
             status: {
               in: ['APPROVED']
             }
+          }
+        },
+        VideoTag: {
+          select: {
+            tag: true
           }
         }
       }
