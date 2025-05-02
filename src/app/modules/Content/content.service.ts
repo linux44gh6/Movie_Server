@@ -155,6 +155,11 @@ const getContentById = async (id: string) => {
               in: ['APPROVED']
             }
           }
+        },
+        VideoTag: {
+          select: {
+            tag: true
+          }
         }
       }
     });
