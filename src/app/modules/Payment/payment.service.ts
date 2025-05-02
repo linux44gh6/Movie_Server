@@ -7,8 +7,7 @@ const SSLCommerzPayment = require('sslcommerz-lts')
 
 const is_live = false
 const payment = async (data: Partial<TPaymentData>, user: any) => {
-  console.log(user.id);
-  const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1 } = data;
+  const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1,contentId} = data;
 
   const sslcz = new SSLCommerzPayment(
     config.payment.store_id,
@@ -27,6 +26,7 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
     cus_phone: cus_phone || '',
     cus_add1: cus_add1 || '',
     userId: user.id,
+    contentId:contentId || '',
     paymentStatus: false,
   };
   await prisma.payment.create({
@@ -42,11 +42,24 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
     },
     data:{
       paymentStatus:true
+    },
+    include:{
+      user:true,
+      video:true
     }
    })
    return result
 };
 
+const failedPayment= async (trx_id:any) => {
+ const result=await prisma.payment.delete({
+  where:{
+    tran_id:trx_id
+  }
+ }
+)
+return result
+}
 
 const getAllPayment = async () => {
   try{
@@ -73,5 +86,6 @@ export const paymentService={
     payment,
     successPayment,
     getAllPayment,
-    getAllPaymentByUser
+    getAllPaymentByUser,
+    failedPayment
 }
