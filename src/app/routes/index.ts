@@ -56,7 +56,7 @@ const modulesRoute = [
     route: paymentRouter
   },
   {
-    path: '/tag',
+    path: '/tags',
     route: TagRoutes
   },
 ];

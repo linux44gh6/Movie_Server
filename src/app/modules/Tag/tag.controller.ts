@@ -25,9 +25,22 @@ const createTag = catchAsync(async (req, res, next) => {
     });
 });
 
+const assignTagsToReview = catchAsync(async (req, res, next) => {
+
+
+    const result = await TagServices.assignTagsToReview(req.body);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Tag assigned successfully',
+        data: result
+    });
+});
+
 
 
 export const TagController = {
     getAllTags,
-    createTag
+    createTag,
+    assignTagsToReview
 };

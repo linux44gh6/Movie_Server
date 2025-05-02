@@ -81,6 +81,11 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
               in: ['APPROVED']
             }
           }
+        },
+        VideoTag: {
+          select: {
+            tag: true
+          }
         }
       }
     });
