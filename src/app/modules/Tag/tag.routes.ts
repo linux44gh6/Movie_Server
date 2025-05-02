@@ -9,6 +9,7 @@ import { TagController } from './tag.controller';
 const router = express.Router()
 
 router.get('/', auth(UserRole.ADMIN, UserRole.USER), TagController.getAllTags)
+router.post('/', auth(UserRole.ADMIN), TagController.createTag)
 
 
 export const TagRoutes = router

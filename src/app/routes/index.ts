@@ -9,6 +9,7 @@ import { ReviewRoutes } from '../modules/Reviews/reviews.routes';
 import { WatchListRoutes } from '../modules/WatchList/watchList.routes';
 import { AdminRoute } from '../modules/Admin/admin.routes';
 import { paymentRouter } from '../modules/Payment/payment.routes';
+import { TagRoutes } from '../modules/Tag/tag.routes';
 
 
 const router = express.Router();
@@ -52,8 +53,12 @@ const modulesRoute = [
   },
   {
     path: '/payment',
-    route:paymentRouter
-  }
+    route: paymentRouter
+  },
+  {
+    path: '/tag',
+    route: TagRoutes
+  },
 ];
 
 modulesRoute.forEach((route) => {

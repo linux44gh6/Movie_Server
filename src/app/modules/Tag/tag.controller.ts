@@ -6,7 +6,6 @@ import { TagServices } from './tag.services';
 const getAllTags = catchAsync(async (req, res, next) => {
 
     const result = await TagServices.getAllTags();
-
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
@@ -15,8 +14,20 @@ const getAllTags = catchAsync(async (req, res, next) => {
     });
 });
 
+const createTag = catchAsync(async (req, res, next) => {
+
+    const result = await TagServices.createTag(req.body);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Tag created successfully',
+        data: result
+    });
+});
+
 
 
 export const TagController = {
-    getAllTags
+    getAllTags,
+    createTag
 };
