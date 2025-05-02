@@ -95,6 +95,11 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                             in: ['APPROVED']
                         }
                     }
+                },
+                VideoTag: {
+                    select: {
+                        tag: true
+                    }
                 }
             }
         });
@@ -161,6 +166,11 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
                         status: {
                             in: ['APPROVED']
                         }
+                    }
+                },
+                VideoTag: {
+                    select: {
+                        tag: true
                     }
                 }
             }
