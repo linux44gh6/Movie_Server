@@ -8,7 +8,7 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
             id: reviewId
         }
     })
-
+    
     const result = await prisma.review.update({
         where: {
             id: reviewId

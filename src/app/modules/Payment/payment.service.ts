@@ -2,7 +2,6 @@ import { StatusCodes } from "http-status-codes";
 import config from "../../../config";
 import prisma from "../../../helpers/prisma";
 import ApiError from "../../errors/apiError";
-import { IAuthUser } from "../../interface/common";
 import { TPaymentData } from "./payment.interface";
 const SSLCommerzPayment = require('sslcommerz-lts')
 
@@ -35,11 +34,6 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
   });
   return GatewayPageURL;
 };
-
-
-
-
-
 
  const successPayment= async (tran_id:any) => {
    const result=await prisma.payment.update({
