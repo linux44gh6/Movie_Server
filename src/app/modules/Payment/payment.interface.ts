@@ -27,5 +27,6 @@ export type TPaymentData = {
     ship_state: string;
     ship_postcode: string | number;
     ship_country: string;
+    contentId:string
   };
   
