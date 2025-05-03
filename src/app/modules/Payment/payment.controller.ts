@@ -9,14 +9,18 @@ import { StatusCodes } from "http-status-codes";
 
 const payment=catchAsync(async (req, res) => {
   const user=req.user
-  const{amount,userName,userPhone} = req.body
+  const{amount,userName,userPhone,contentId} = req.body
   const tran_id = Math.random().toString(16).substring(2)
   data.total_amount = amount
   data.cus_name =userName
   data.cus_email = user.email
   data.tran_id = tran_id
   data.cus_phone=userPhone
-  const result=await paymentService.payment(data,user)
+  const customData={
+    ...data,
+    contentId
+  }
+  const result=await paymentService.payment(customData,user)
   sendResponse(res,{
     message:"Payment Initiated",
     data:result,
@@ -35,6 +39,16 @@ const payment=catchAsync(async (req, res) => {
       statuscode: StatusCodes.OK,
       success: true,
     });
+});
+ const failedController =catchAsync(async (req, res) => {
+  const { tran_id } = req.params;
+  const result=await paymentService.failedPayment(tran_id);
+    sendResponse(res, {
+      message: "Payment Failed",
+      data: result,
+      statuscode: StatusCodes.OK,
+      success: true,
+    })
 });
 
 const getAllPayment =catchAsync(async (req, res) => {
@@ -62,5 +76,6 @@ export const paymentController = {
   payment,
   successController,
   getAllPayment,
-  getAllPaymentByUser
+  getAllPaymentByUser,
+  failedController
 }
