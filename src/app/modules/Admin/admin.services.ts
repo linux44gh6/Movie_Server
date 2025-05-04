@@ -9,6 +9,7 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
         }
     })
 
+    console.log(payload)
     const result = await prisma.review.update({
         where: {
             id: reviewId
@@ -149,7 +150,11 @@ const removeUser = async (userId: string) => {
 
 const getAllUserReview = async (userId: string) => {
 
-    const result = await prisma.review.findMany({})
+    const result = await prisma.review.findMany({
+        include: {
+            user: true
+        }
+    })
 
     return result
 }
