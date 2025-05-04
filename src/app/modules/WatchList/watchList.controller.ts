@@ -34,7 +34,7 @@ const removeWatchList = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Watch list fetched successfully',
+        message: 'Video removed from watch list successfully',
         data: result
     });
 });
