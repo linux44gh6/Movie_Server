@@ -146,11 +146,11 @@ CREATE TABLE "tags" (
 );
 
 -- CreateTable
-CREATE TABLE "review_tags" (
-    "reviewId" TEXT NOT NULL,
+CREATE TABLE "video_tags" (
+    "videoId" TEXT NOT NULL,
     "tagId" TEXT NOT NULL,
 
-    CONSTRAINT "review_tags_pkey" PRIMARY KEY ("reviewId","tagId")
+    CONSTRAINT "video_tags_pkey" PRIMARY KEY ("videoId","tagId")
 );
 
 -- CreateIndex
@@ -217,7 +217,7 @@ ALTER TABLE "purchases" ADD CONSTRAINT "purchases_userId_fkey" FOREIGN KEY ("use
 ALTER TABLE "purchases" ADD CONSTRAINT "purchases_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "review_tags" ADD CONSTRAINT "review_tags_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "video_tags" ADD CONSTRAINT "video_tags_videoId_fkey" FOREIGN KEY ("videoId") REFERENCES "video"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "review_tags" ADD CONSTRAINT "review_tags_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "video_tags" ADD CONSTRAINT "video_tags_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

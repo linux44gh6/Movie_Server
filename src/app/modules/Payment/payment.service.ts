@@ -9,6 +9,12 @@ const is_live = false
 const payment = async (data: Partial<TPaymentData>, user: any) => {
   const { total_amount, cus_name, cus_email, tran_id, cus_phone, cus_add1,contentId} = data;
 
+  // const isExist=await prisma.payment.findFirst({
+  //   where:{
+  //     contentId:contentId,
+  //     userId:user.id
+  //   }
+  // })
   const sslcz = new SSLCommerzPayment(
     config.payment.store_id,
     config.payment.store_passwd,
@@ -63,7 +69,12 @@ return result
 
 const getAllPayment = async () => {
   try{
-    const result = await prisma.payment.findMany();
+    const result = await prisma.payment.findMany({
+      include:{
+        user:true,
+        video:true
+      }
+    });
   return result;
   }catch(err){
     throw new ApiError(StatusCodes.FORBIDDEN, "Something went wrong")
@@ -75,6 +86,9 @@ const getAllPaymentByUser = async (email:string) => {
     const result = await prisma.payment.findMany({
       where:{
         cus_email:email
+      },
+      include:{
+        video:true
       }
     });
   return result;
