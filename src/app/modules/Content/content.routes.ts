@@ -13,7 +13,7 @@ router.get('/:id', contentController.getSingleContent);
 
 
 
-router.post('/', upload.single('file'), auth(UserRole.ADMIN,UserRole.USER), (req, res, next) => {
+router.post('/', upload.single('file'), auth(UserRole.ADMIN), (req, res, next) => {
   req.body = JSON.parse(req.body.data);
   return contentController.createContent(req, res, next);
 });
