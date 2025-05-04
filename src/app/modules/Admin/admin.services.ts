@@ -129,6 +129,16 @@ const getAllUser = async () => {
 
     return result
 }
+const removeUser = async (userId: string) => {
+
+    const result = await prisma.user.delete({
+        where: {
+            id: userId
+        }
+    })
+
+    return result
+}
 
 export const AdminServices = {
     approveOrUnpublishReview,
@@ -137,5 +147,6 @@ export const AdminServices = {
     removeInappropriateComment,
     getAverageRating,
     getMostReviewedTitle,
-    getAllUser
+    getAllUser,
+    removeUser
 }

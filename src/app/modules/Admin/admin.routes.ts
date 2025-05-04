@@ -16,6 +16,7 @@ router.patch('/review/:id', validateRequest(AdminValidationSchema.updateReview),
 router.patch('/comment/:id', auth(UserRole.ADMIN), AdminController.approveOrUnpublishComment)
 router.delete('/remove-inappropriate-review/:id', auth(UserRole.ADMIN), AdminController.removeInappropriateReview)
 router.delete('/remove-inappropriate-comment/:id', auth(UserRole.ADMIN), AdminController.removeInappropriateComment)
+router.delete('/remove-user/:id', auth(UserRole.ADMIN), AdminController.removeUser)
 
 export const AdminRoute = router
 
