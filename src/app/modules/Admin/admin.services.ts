@@ -8,7 +8,7 @@ const approveOrUnpublishReview = async (reviewId: string, payload: { status: Rev
             id: reviewId
         }
     })
-    
+
     const result = await prisma.review.update({
         where: {
             id: reviewId
@@ -115,6 +115,20 @@ const getMostReviewedTitle = async () => {
     return result;
 };
 
+const getAllUser = async () => {
+    const result = await prisma.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            createAt: true,
+            role: true,
+            updateAt: true,
+        }
+    });
+
+    return result
+}
 
 export const AdminServices = {
     approveOrUnpublishReview,
@@ -122,5 +136,6 @@ export const AdminServices = {
     removeInappropriateReview,
     removeInappropriateComment,
     getAverageRating,
-    getMostReviewedTitle
+    getMostReviewedTitle,
+    getAllUser
 }

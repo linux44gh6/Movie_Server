@@ -67,6 +67,17 @@ const getAverageRating = catchAsync(async (req, res, next) => {
         data: result
     });
 });
+const getAllUser = catchAsync(async (req, res, next) => {
+
+    const result = await AdminServices.getAllUser();
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'All user has been successfully fetched.',
+        data: result
+    });
+});
 
 const getMostReviewedTitle = catchAsync(async (req, res, next) => {
 
@@ -87,5 +98,6 @@ export const AdminController = {
     removeInappropriateReview,
     removeInappropriateComment,
     getAverageRating,
-    getMostReviewedTitle
+    getMostReviewedTitle,
+    getAllUser
 };
