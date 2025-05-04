@@ -5,6 +5,7 @@ import { UserRole } from '@prisma/client';
 
 const router = express.Router();
 
+router.get('/', auth(UserRole.USER, UserRole.ADMIN), WatchController.getWatchList);
 router.post('/', auth(UserRole.USER, UserRole.ADMIN), WatchController.addToWatchList);
 
 export const WatchListRoutes = router;

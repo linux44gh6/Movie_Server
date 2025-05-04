@@ -11,7 +11,18 @@ const addToWatchList = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
-        message: 'Tags fetched successfully',
+        message: 'Video added to watch list successfully',
+        data: result
+    });
+});
+const getWatchList = catchAsync(async (req, res, next) => {
+
+    const user = req.user;
+    const result = await WatchServices.getWatchList(user as IAuthUser);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Watch list fetched successfully',
         data: result
     });
 });
@@ -19,5 +30,6 @@ const addToWatchList = catchAsync(async (req, res, next) => {
 
 
 export const WatchController = {
-    addToWatchList
+    addToWatchList,
+    getWatchList
 };

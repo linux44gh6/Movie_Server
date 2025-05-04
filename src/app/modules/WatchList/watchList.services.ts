@@ -25,7 +25,19 @@ const addToWatchList = async (user: IAuthUser, payload: any) => {
     return result
 }
 
+const getWatchList = async (user: IAuthUser) => {
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated or doesn't exist");
+    }
+    const result = await prisma.watchList.findMany({
+        where: {
+            userId: user?.id
+        }
+    })
+    return result
+}
 
 export const WatchServices = {
-    addToWatchList
+    addToWatchList,
+    getWatchList
 }
