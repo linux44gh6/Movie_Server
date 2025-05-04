@@ -61,8 +61,8 @@ const getSingleComment = catchAsync(async (req, res, next) => {
 });
 
 const getCommentByUser = catchAsync(async (req, res, next) => {
-    const user = req.user;
-    const result = await CommentServices.getCommentByUser(user.id);
+    const {id}=req.params
+    const result = await CommentServices.getCommentByUser(id);
     sendResponse(res, {
         statuscode: httpStatus.OK,
         success: true,
