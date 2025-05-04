@@ -7,5 +7,6 @@ const router = express.Router();
 
 router.get('/', auth(UserRole.USER, UserRole.ADMIN), WatchController.getWatchList);
 router.post('/', auth(UserRole.USER, UserRole.ADMIN), WatchController.addToWatchList);
+router.delete('/:id', auth(UserRole.USER, UserRole.ADMIN), WatchController.removeWatchList);
 
 export const WatchListRoutes = router;

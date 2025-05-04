@@ -26,10 +26,23 @@ const getWatchList = catchAsync(async (req, res, next) => {
         data: result
     });
 });
+const removeWatchList = catchAsync(async (req, res, next) => {
+
+    const user = req.user;
+    const videoId = req.params.id
+    const result = await WatchServices.removeWatchList(user as IAuthUser, videoId);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Watch list fetched successfully',
+        data: result
+    });
+});
 
 
 
 export const WatchController = {
     addToWatchList,
-    getWatchList
+    getWatchList,
+    removeWatchList
 };

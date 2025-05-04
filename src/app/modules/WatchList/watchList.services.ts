@@ -37,7 +37,21 @@ const getWatchList = async (user: IAuthUser) => {
     return result
 }
 
+const removeWatchList = async (user: IAuthUser, videoId: string) => {
+    if (!user) {
+        throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated or doesn't exist");
+    }
+    const result = await prisma.watchList.deleteMany({
+        where: {
+            userId: user?.id,
+            videoId: videoId
+        }
+    })
+    return result
+}
+
 export const WatchServices = {
     addToWatchList,
-    getWatchList
+    getWatchList,
+    removeWatchList
 }
