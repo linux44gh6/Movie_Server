@@ -60,10 +60,21 @@ const getSingleComment = catchAsync(async (req, res, next) => {
     });
 });
 
+const getCommentByUser = catchAsync(async (req, res, next) => {
+    const user = req.user;
+    const result = await CommentServices.getCommentByUser(user.id);
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'Comment fetched successfully',
+        data: result,
+    });
+})
 export const CommentController = {
     addComments,
     getAllComment,
     editComment,
     deleteComment,
-    getSingleComment
+    getSingleComment,
+    getCommentByUser,
 };
