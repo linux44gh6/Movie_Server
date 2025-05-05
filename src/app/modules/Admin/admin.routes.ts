@@ -7,7 +7,7 @@ import { UserRole } from '@prisma/client'
 
 const router = express.Router()
 
-router.get('/get-most-review-title', auth(UserRole.ADMIN), AdminController.getMostReviewedTitle)
+router.get('/get-most-review-title',  AdminController.getMostReviewedTitle)
 router.get('/get-all-user', auth(UserRole.ADMIN), AdminController.getAllUser)
 router.get('/get-user-review', auth(UserRole.ADMIN), AdminController.getAllUserReview)
 router.get('/get-user-comments', auth(UserRole.ADMIN), AdminController.getAllUserComments)

@@ -42,13 +42,13 @@ const approveOrUnpublishComment = async (commentId: string, payload: { status: C
 }
 const removeInappropriateReview = async (reviewId: string) => {
 
-    await prisma.comment.findFirstOrThrow({
+    await prisma.review.findFirstOrThrow({
         where: {
             id: reviewId
         }
     })
 
-    const result = await prisma.comment.delete({
+    const result = await prisma.review.delete({
         where: {
             id: reviewId
         }
@@ -94,25 +94,85 @@ const getAverageRating = async (videoId: string) => {
 };
 
 const getMostReviewedTitle = async () => {
-    const result = await prisma.video.findMany({
-        orderBy: {
-            review: {
-                _count: 'desc',
-            }
+    const titles = await prisma.video.findMany({
+        include: {
+            review: true,
         },
-        take: 10,
-        select: {
-            id: true,
-            title: true,
-            _count: {
-                select: {
-                    review: true
-                }
-            }
-        }
     });
 
-    return result;
+
+    const reviews = await prisma.review.findMany({
+        include: {
+            user: true,
+            video: true,
+        }
+    });
+    const totalReviews = reviews.length;
+    const averageRating = reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews;
+    const titlesReviewed = titles.length;
+    const activeReviewers = await prisma.user.count();
+
+    const stats = {
+        totalReviews,
+        averageRating: averageRating.toFixed(1),
+        titlesReviewed,
+        activeReviewers,
+    };
+
+
+    const formattedTitles = titles.map((video) => {
+        const reviewCount = video.review.length;
+        const averageVideoRating =
+            video.review.reduce((sum, review) => sum + review.rating, 0) / reviewCount || 0;
+        return {
+            id: video.id,
+            title: video.title,
+            category: video.category,
+            reviewCount,
+            averageRating: averageVideoRating.toFixed(1),
+        };
+    });
+
+
+    const ratingSummary = [1, 2, 3, 4, 5].map((rating) => {
+        const count = reviews.filter((review) => review.rating === rating).length;
+        return {
+            rating,
+            count,
+            percentage: ((count / totalReviews) * 100).toFixed(0),
+        };
+    });
+
+
+    const formattedReviews = reviews
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 7)
+        .map((review) => {
+            const createdAt = new Date(review.createdAt).getTime();
+            const hoursAgo = Math.floor((new Date().getTime() - createdAt) / (1000 * 60 * 60));
+
+            return {
+                id: review.id,
+                title: review.video.title,
+                user: {
+                    name: review.user.name || "N/A",
+                    // avatar: review.user.
+                },
+                rating: review.rating,
+                comment: review.content,
+                date: `${hoursAgo} hours ago`,
+            };
+        });
+
+    const demoData = {
+        stats,
+        titles: formattedTitles,
+        ratingSummary,
+        reviews: formattedReviews,
+    };
+
+    return demoData
+
 };
 
 const getAllUser = async () => {
@@ -187,6 +247,7 @@ const getAllUserReview = async (userId: string) => {
     return result
 }
 
+
 export const AdminServices = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
@@ -198,5 +259,5 @@ export const AdminServices = {
     removeUser,
     getAllUserReview,
     getAllUserComments,
-    activeUser
+    activeUser,
 }
