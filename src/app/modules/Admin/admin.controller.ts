@@ -116,6 +116,20 @@ const removeUser = catchAsync(async (req, res, next) => {
         data: result
     });
 });
+const activeUser = catchAsync(async (req, res, next) => {
+
+    const userId = req.params.id
+
+    const result = await AdminServices.activeUser(userId);
+
+    sendResponse(res, {
+        statuscode: httpStatus.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+});
+
 const getAllUserReview = catchAsync(async (req, res, next) => {
 
     const userId = req.params.id
@@ -141,5 +155,6 @@ export const AdminController = {
     getAllUser,
     removeUser,
     getAllUserReview,
-    getAllUserComments
+    getAllUserComments,
+    activeUser
 };

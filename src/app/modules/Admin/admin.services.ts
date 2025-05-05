@@ -117,8 +117,8 @@ const getMostReviewedTitle = async () => {
 
 const getAllUser = async () => {
     const result = await prisma.user.findMany({
-        where: {
-            isDeleted: false
+        orderBy: {
+            createAt: 'asc'
         },
         select: {
             id: true,
@@ -126,6 +126,7 @@ const getAllUser = async () => {
             email: true,
             createAt: true,
             role: true,
+            isDeleted: true,
             updateAt: true,
         },
 
@@ -137,6 +138,9 @@ const getAllUserComments = async () => {
     const result = await prisma.comment.findMany({
         include: {
             user: true
+        },
+        orderBy: {
+            createdAt: 'asc'
         }
     });
 
@@ -155,12 +159,28 @@ const removeUser = async (userId: string) => {
 
     return result
 }
+const activeUser = async (userId: string) => {
+
+    const result = await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            isDeleted: false
+        }
+    })
+
+    return result
+}
 
 const getAllUserReview = async (userId: string) => {
 
     const result = await prisma.review.findMany({
         include: {
             user: true
+        },
+        orderBy: {
+            createdAt: 'asc'
         }
     })
 
@@ -177,5 +197,6 @@ export const AdminServices = {
     getAllUser,
     removeUser,
     getAllUserReview,
-    getAllUserComments
+    getAllUserComments,
+    activeUser
 }
