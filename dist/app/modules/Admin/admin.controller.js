@@ -67,6 +67,24 @@ const getAverageRating = (0, catchAsync_1.default)((req, res, next) => __awaiter
         data: result
     });
 }));
+const getAllUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield admin_services_1.AdminServices.getAllUser();
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'All user has been successfully fetched.',
+        data: result
+    });
+}));
+const getAllUserComments = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield admin_services_1.AdminServices.getAllUserComments();
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'All user comments has been successfully fetched.',
+        data: result
+    });
+}));
 const getMostReviewedTitle = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield admin_services_1.AdminServices.getMostReviewedTitle();
     (0, sendResponse_1.default)(res, {
@@ -76,11 +94,46 @@ const getMostReviewedTitle = (0, catchAsync_1.default)((req, res, next) => __awa
         data: result
     });
 }));
+const removeUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.id;
+    const result = yield admin_services_1.AdminServices.removeUser(userId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+}));
+const activeUser = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.id;
+    const result = yield admin_services_1.AdminServices.activeUser(userId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+}));
+const getAllUserReview = (0, catchAsync_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = req.params.id;
+    const result = yield admin_services_1.AdminServices.getAllUserReview(userId);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'User has been successfully deleted.',
+        data: result
+    });
+}));
 exports.AdminController = {
     approveOrUnpublishReview,
     approveOrUnpublishComment,
     removeInappropriateReview,
     removeInappropriateComment,
     getAverageRating,
-    getMostReviewedTitle
+    getMostReviewedTitle,
+    getAllUser,
+    removeUser,
+    getAllUserReview,
+    getAllUserComments,
+    activeUser
 };
