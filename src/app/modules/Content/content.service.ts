@@ -29,22 +29,14 @@ const createContent = async (req: any) => {
     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
   }
 };
-
-const getAllContent = async (params: SearchParams, options: TPaginationOptions) => {
+const getAllContent = async (params: SearchParams, options: TPaginationOptions, userId?: string) => {
   try {
-    console.log("Search Params:", params);
-
     const { searchTerm, ...exactMatchFields } = params;
     const { page, limit, sortBy, sortOrder, skip } = calculatePagination(options);
 
     const conditions: Prisma.VideoWhereInput[] = [];
+    const searchableFields: (keyof Prisma.VideoWhereInput)[] = ['title', 'description', 'director', 'cast'];
 
-    //  Ensure searchAble field valid and defined
-    const searchableFields: (keyof Prisma.VideoWhereInput)[] = ['title', 'description',
-      'director','cast'
-    ];
-
-    //* jodi searchTerm and SearchAble field ar value valid hoy thaole ata execute hobe
     if (searchTerm && searchableFields.length > 0) {
       conditions.push({
         OR: searchableFields.map((field) => ({
@@ -57,7 +49,6 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
     }
 
     const numberFields = ['releaseYear', 'views'];
-    //*  Exact match fields
     if (Object.keys(exactMatchFields).length > 0) {
       conditions.push({
         AND: Object.entries(exactMatchFields).map(([key, value]) => {
@@ -69,7 +60,7 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
               },
             };
           }
-      
+
           return {
             [key]: {
               equals: isNumberField ? Number(value) : value,
@@ -81,10 +72,9 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
 
     const whereConditions: Prisma.VideoWhereInput = conditions.length > 0 ? { AND: conditions } : {};
 
-    const validSortFields = ['createdAt', 'title']; 
+    const validSortFields = ['createdAt', 'title'];
     const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
 
-    // Final query
     const result = await prisma.video.findMany({
       where: whereConditions,
       skip,
@@ -112,8 +102,26 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
             tag: true,
           },
         },
+
+        Like: userId ? {
+          where: {
+            userId: userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
       },
     });
+
+
+    if (userId) {
+      result.forEach((video) => {
+
+        const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+        (video as any).liked = likedVideoIds.includes(video.id);
+      });
+    }
 
     const total = await prisma.video.count({
       where: whereConditions,
@@ -133,9 +141,6 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions) 
     throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, error.message);
   }
 };
-
-
-
 
 //* update content
 
@@ -224,7 +229,7 @@ const contentGetCategory = async () => {
       where: {
         category: {
           equals: "SERIES",
-          // mode:"insensitive"
+
         }
       }
     });

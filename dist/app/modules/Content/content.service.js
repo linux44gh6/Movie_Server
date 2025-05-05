@@ -48,17 +48,12 @@ const createContent = (req) => __awaiter(void 0, void 0, void 0, function* () {
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
-const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log("Search Params:", params);
         const { searchTerm } = params, exactMatchFields = __rest(params, ["searchTerm"]);
         const { page, limit, sortBy, sortOrder, skip } = (0, content_constans_1.calculatePagination)(options);
         const conditions = [];
-        //  Ensure searchAble field valid and defined
-        const searchableFields = ['title', 'description',
-            'director', 'cast'
-        ];
-        //* jodi searchTerm and SearchAble field ar value valid hoy thaole ata execute hobe
+        const searchableFields = ['title', 'description', 'director', 'cast'];
         if (searchTerm && searchableFields.length > 0) {
             conditions.push({
                 OR: searchableFields.map((field) => ({
@@ -70,7 +65,6 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
             });
         }
         const numberFields = ['releaseYear', 'views'];
-        //*  Exact match fields
         if (Object.keys(exactMatchFields).length > 0) {
             conditions.push({
                 AND: Object.entries(exactMatchFields).map(([key, value]) => {
@@ -93,7 +87,6 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
         const whereConditions = conditions.length > 0 ? { AND: conditions } : {};
         const validSortFields = ['createdAt', 'title'];
         const sortField = validSortFields.includes(sortBy) ? sortBy : 'createdAt';
-        // Final query
         const result = yield prisma.video.findMany({
             where: whereConditions,
             skip,
@@ -121,8 +114,22 @@ const getAllContent = (params, options) => __awaiter(void 0, void 0, void 0, fun
                         tag: true,
                     },
                 },
+                Like: userId ? {
+                    where: {
+                        userId: userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
             },
         });
+        if (userId) {
+            result.forEach((video) => {
+                const likedVideoIds = video.Like ? video.Like.map(like => like.videoId) : [];
+                video.liked = likedVideoIds.includes(video.id);
+            });
+        }
         const total = yield prisma.video.count({
             where: whereConditions,
         });
@@ -226,7 +233,6 @@ const contentGetCategory = () => __awaiter(void 0, void 0, void 0, function* () 
             where: {
                 category: {
                     equals: "SERIES",
-                    // mode:"insensitive"
                 }
             }
         });
