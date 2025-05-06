@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import { uploadToCloudinary } from '../../../utils';
 import { Prisma, PrismaClient } from '@prisma/client';
 
-import { calculatePagination} from './content.constans';
+import { calculatePagination } from './content.constans';
 import { SearchParams, TPaginationOptions } from './content.interface';
 import ApiError from '../../errors/apiError';
 
@@ -85,16 +85,40 @@ const getAllContent = async (params: SearchParams, options: TPaginationOptions, 
       include: {
         Comment: {
           where: {
-            status: {
-              in: ['APPROVED'],
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
+            parentCommentId: null,
+          },
+          include: {
+            replies: {
+              where: {
+                OR: [
+                  { status: 'APPROVED' },
+                  ...(userId ? [{ userId }] : []),
+                ],
+              },
+              include: {
+                user: true,
+              },
             },
+            user: true,
+            Like: userId
+              ? {
+                where: { userId },
+                select: { commentId: true },
+              }
+              : false,
           },
         },
+
         review: {
           where: {
-            status: {
-              in: ['APPROVED'],
-            },
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
           },
         },
         VideoTag: {
@@ -168,7 +192,7 @@ const updateContent = async (id: string, req: any) => {
   }
 };
 
-const getContentById = async (id: string) => {
+const getContentById = async (id: string, userId?: string) => {
   try {
     const isExist = await prisma.video.findUnique({
       where: { id },
@@ -181,25 +205,59 @@ const getContentById = async (id: string) => {
       include: {
         Comment: {
           where: {
-            status: {
-              in: ['APPROVED']
-            }
-          }
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
+            parentCommentId: null,
+          },
+          include: {
+            replies: {
+              where: {
+                OR: [
+                  { status: 'APPROVED' },
+                  ...(userId ? [{ userId }] : []),
+                ],
+              },
+              include: {
+                user: true,
+              },
+            },
+            user: true,
+            Like: userId
+              ? {
+                where: { userId },
+                select: { commentId: true },
+              }
+              : false,
+          },
         },
+
         review: {
           where: {
-            status: {
-              in: ['APPROVED']
-            }
-          }
+            OR: [
+              { status: 'APPROVED' },
+              ...(userId ? [{ userId }] : []),
+            ],
+          },
         },
         VideoTag: {
           select: {
-            tag: true
-          }
-        }
-      }
+            tag: true,
+          },
+        },
+
+        Like: userId ? {
+          where: {
+            userId: userId,
+          },
+          select: {
+            videoId: true,
+          },
+        } : undefined,
+      },
     });
+  
     return content;
   } catch (err) {
     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
@@ -217,6 +275,7 @@ const deleteContent = async (id: string) => {
     const content = await prisma.video.delete({
       where: { id },
     });
+
     return content;
   } catch (err) {
     throw new ApiError(httpStatus.FORBIDDEN, (err as Error).message);
