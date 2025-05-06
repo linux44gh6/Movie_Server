@@ -97,16 +97,39 @@ const getAllContent = (params, options, userId) => __awaiter(void 0, void 0, voi
             include: {
                 Comment: {
                     where: {
-                        status: {
-                            in: ['APPROVED'],
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+                        parentCommentId: null,
+                    },
+                    include: {
+                        replies: {
+                            where: {
+                                OR: [
+                                    { status: 'APPROVED' },
+                                    ...(userId ? [{ userId }] : []),
+                                ],
+                            },
+                            include: {
+                                user: true,
+                            },
                         },
+                        user: true,
+                        Like: userId
+                            ? {
+                                where: { userId },
+                                select: { commentId: true },
+                            }
+                            : false,
                     },
                 },
                 review: {
                     where: {
-                        status: {
-                            in: ['APPROVED'],
-                        },
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
                     },
                 },
                 VideoTag: {
@@ -172,7 +195,7 @@ const updateContent = (id, req) => __awaiter(void 0, void 0, void 0, function* (
         throw new apiError_1.default(http_status_1.default.FORBIDDEN, err.message);
     }
 });
-const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+const getContentById = (id, userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const isExist = yield prisma.video.findUnique({
             where: { id },
@@ -185,24 +208,55 @@ const getContentById = (id) => __awaiter(void 0, void 0, void 0, function* () {
             include: {
                 Comment: {
                     where: {
-                        status: {
-                            in: ['APPROVED']
-                        }
-                    }
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+                        parentCommentId: null,
+                    },
+                    include: {
+                        replies: {
+                            where: {
+                                OR: [
+                                    { status: 'APPROVED' },
+                                    ...(userId ? [{ userId }] : []),
+                                ],
+                            },
+                            include: {
+                                user: true,
+                            },
+                        },
+                        user: true,
+                        Like: userId
+                            ? {
+                                where: { userId },
+                                select: { commentId: true },
+                            }
+                            : false,
+                    },
                 },
                 review: {
                     where: {
-                        status: {
-                            in: ['APPROVED']
-                        }
-                    }
+                        OR: [
+                            { status: 'APPROVED' },
+                            ...(userId ? [{ userId }] : []),
+                        ],
+                    },
                 },
                 VideoTag: {
                     select: {
-                        tag: true
-                    }
-                }
-            }
+                        tag: true,
+                    },
+                },
+                Like: userId ? {
+                    where: {
+                        userId: userId,
+                    },
+                    select: {
+                        videoId: true,
+                    },
+                } : undefined,
+            },
         });
         return content;
     }
