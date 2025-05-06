@@ -184,6 +184,9 @@ const getContentById = async (id: string) => {
             status: {
               in: ['APPROVED']
             }
+          },
+          include: {
+            user: true
           }
         },
         review: {
@@ -191,6 +194,9 @@ const getContentById = async (id: string) => {
             status: {
               in: ['APPROVED']
             }
+          },
+          include:{
+            user:true
           }
         },
         VideoTag: {

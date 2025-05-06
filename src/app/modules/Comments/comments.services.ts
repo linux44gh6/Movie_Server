@@ -6,11 +6,9 @@ import { CommentStatus, ReviewStatus } from "@prisma/client";
 
 
 const addComment = async (user: any, payload: any) => {
-
     if (!user) {
         throw new ApiError(httpStatus.UNAUTHORIZED, "User is not authenticated or doesn't exist");
     }
-
     const userData = await prisma.user.findFirstOrThrow({
         where: {
             email: user.email,
@@ -54,7 +52,20 @@ const addComment = async (user: any, payload: any) => {
                 [target + "Id"]: payload[`${target}Id`],
             },
         });
-
+        
+        // const pushCommentId = await prisma.video.update({
+        //     where: {
+        //         id: result.videoId!,
+        //     },
+        //     data: {
+        //         Comment: {
+        //             connect: {
+        //                 id: result.id,
+        //             },
+        //         },
+        //     },
+        // });
+        // console.log(pushCommentId);
         return result;
     }
 
@@ -166,7 +177,6 @@ const getSingleComment = async (commentId: string) => {
             id: commentId,
         },
     });
-
     return result;
 };
 const getCommentByUser=async (userId: string) => {
