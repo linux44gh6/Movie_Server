@@ -27,9 +27,7 @@ const likeVideo = async (user: IAuthUser, payload: any) => {
                 data: { like: { decrement: 1 } }
             });
             return {
-                message: 'Successfully unliked the video',
-                likeCount: currentLikeCount - 1,
-                liked: false
+                message: 'Successfully un liked the video',
             };
         } else {
 
@@ -40,8 +38,6 @@ const likeVideo = async (user: IAuthUser, payload: any) => {
             });
             return {
                 message: 'Successfully liked the video',
-                likeCount: currentLikeCount + 1,
-                liked: true
             };
         }
     });
@@ -77,9 +73,7 @@ const likeReview = async (user: IAuthUser, payload: any) => {
             });
 
             return {
-                message: 'Successfully unliked the review',
-                likeCount: updatedReview.like,
-                liked: false
+                message: 'Successfully un liked the review',
             };
         } else {
 
@@ -96,8 +90,6 @@ const likeReview = async (user: IAuthUser, payload: any) => {
 
             return {
                 message: 'Successfully liked the review',
-                likeCount: updatedReview.like,
-                liked: true
             };
         }
     });
@@ -131,9 +123,7 @@ const likeComment = async (user: IAuthUser, payload: { commentId: string }) => {
             });
 
             return {
-                message: 'Successfully unliked the comment',
-                likeCount: updatedComment.like,
-                liked: false
+                message: 'Successfully un liked the comment',
             };
         } else {
 
@@ -147,9 +137,7 @@ const likeComment = async (user: IAuthUser, payload: { commentId: string }) => {
             });
 
             return {
-                message: 'Successfully liked the comment',
-                likeCount: updatedComment.like,
-                liked: true
+                message: 'Successfully liked the comment', 
             };
         }
     });

@@ -7,10 +7,11 @@ import { LikeServices } from './likes.services';
 const likeVideo = catchAsync(async (req, res, next) => {
     const user = req.user;
     const result = await LikeServices.likeVideo(user as IAuthUser, req.body);
+
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Video like successfully',
+        message: result.message,
         data: result,
     });
 });
@@ -22,7 +23,7 @@ const likeReview = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Review like successfully',
+        message: result.message,
         data: result,
     });
 });
@@ -33,7 +34,7 @@ const likeComment = catchAsync(async (req, res, next) => {
     sendResponse(res, {
         statuscode: httpStatus.CREATED,
         success: true,
-        message: 'Review unlike successfully',
+        message: result.message,
         data: result,
     });
 });
