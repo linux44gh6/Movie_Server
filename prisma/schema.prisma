@@ -99,7 +99,7 @@ model Review {
   status  ReviewStatus @default(PENDING)
   Comment Comment[]
   Like    Like[]
-
+  tag     String?
   @@map("reviews")
 }
 

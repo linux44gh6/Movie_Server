@@ -62,6 +62,7 @@ CREATE TABLE "likes" (
     "userId" TEXT NOT NULL,
     "videoId" TEXT,
     "reviewId" TEXT,
+    "commentId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
@@ -108,6 +109,7 @@ CREATE TABLE "comments" (
     "status" "CommentStatus" NOT NULL DEFAULT 'PENDING',
     "content" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "like" INTEGER DEFAULT 0,
     "reviewId" TEXT,
     "parentCommentId" TEXT,
 
@@ -163,6 +165,9 @@ CREATE UNIQUE INDEX "likes_userId_videoId_key" ON "likes"("userId", "videoId");
 CREATE UNIQUE INDEX "likes_userId_reviewId_key" ON "likes"("userId", "reviewId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "likes_userId_commentId_key" ON "likes"("userId", "commentId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "payments_tran_id_key" ON "payments"("tran_id");
 
 -- CreateIndex
@@ -179,6 +184,9 @@ ALTER TABLE "likes" ADD CONSTRAINT "likes_videoId_fkey" FOREIGN KEY ("videoId") 
 
 -- AddForeignKey
 ALTER TABLE "likes" ADD CONSTRAINT "likes_reviewId_fkey" FOREIGN KEY ("reviewId") REFERENCES "reviews"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "likes" ADD CONSTRAINT "likes_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "comments"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
