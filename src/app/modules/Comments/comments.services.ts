@@ -94,32 +94,35 @@ const getAllComment = async () => {
     return result;
 };
 const getCommentByContent = async (contentId: string, userId?: string) => {
-
     await prisma.video.findFirstOrThrow({
-        where: {
-            id: contentId,
-        },
+        where: { id: contentId },
     });
 
     const result = await prisma.comment.findMany({
         where: {
             videoId: contentId,
-            OR: [
-                { status: 'APPROVED' },
-                ...(userId ? [{ userId }] : []),
-            ],
+            OR: [{ status: 'APPROVED' }, ...(userId ? [{ userId }] : [])],
             parentCommentId: null,
         },
         include: {
+            _count: {
+                select: { Like: true },
+            },
             replies: {
                 where: {
-                    OR: [
-                        { status: 'APPROVED' },
-                        ...(userId ? [{ userId }] : []),
-                    ],
+                    OR: [{ status: 'APPROVED' }, ...(userId ? [{ userId }] : [])],
                 },
                 include: {
                     user: true,
+                    _count: {
+                        select: { Like: true },
+                    },
+                    Like: userId
+                        ? {
+                            where: { userId },
+                            select: { commentId: true },
+                        }
+                        : false,
                 },
             },
             user: true,
@@ -133,9 +136,26 @@ const getCommentByContent = async (contentId: string, userId?: string) => {
         orderBy: {
             createdAt: 'desc',
         },
-    })
+    });
+    result.forEach((comment: any) => {
+        comment.isLiked = comment.Like && comment.Like.length > 0;
+        comment.likes = comment._count?.Like ?? 0;
+
+        comment.replies?.forEach((reply: any) => {
+            reply.isLiked = reply.Like && reply.Like.length > 0;
+            reply.likes = reply._count?.Like ?? 0;
+
+            delete reply.Like;
+            delete reply._count;
+        });
+
+        delete comment.Like;
+        delete comment._count;
+    });
+
     return result;
 };
+
 
 const editComment = async (user: IAuthUser, commentId: string, payload: any) => {
     if (!user) {
