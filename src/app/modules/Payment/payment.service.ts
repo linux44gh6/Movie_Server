@@ -121,11 +121,28 @@ export const updateAdminStatus = async (id: string) => {
   })
   return result
 }
+
+const rejectPayment = async (id: string) => {
+  const isExist = await prisma.payment.findFirst({
+    where: {
+      id: id
+    }
+  })
+  if (!isExist) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "Payment not found")
+  }
+    const result=await prisma.payment.delete({
+      where:{
+        id:id
+      }
+    })
+}
 export const paymentService = {
   payment,
   successPayment,
   getAllPayment,
   getAllPaymentByUser,
   failedPayment,
-  updateAdminStatus
+  updateAdminStatus,
+  rejectPayment
 }

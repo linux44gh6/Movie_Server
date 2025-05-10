@@ -17,6 +17,7 @@ router.post('/success/:tId', paymentController.successController)
 
 router.patch('/payment-approved/:id',auth(UserRole.ADMIN),paymentController.updateAdminStatus)
 
+router.delete('/rejected-payment/:paymentId',auth(UserRole.ADMIN),paymentController.rejectPayment)
 router.delete('/payment/failed/:tId', paymentController.failedController)
 
 export const paymentRouter = router

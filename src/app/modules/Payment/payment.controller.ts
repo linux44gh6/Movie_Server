@@ -111,11 +111,22 @@ const updateAdminStatus=catchAsync(async(req,res)=>{
   })
 })
 
+const rejectPayment=catchAsync(async(req,res)=>{
+  const {paymentId}=req.params
+  const result=await paymentService.rejectPayment(paymentId)
+  sendResponse(res,{
+    message:"Payment Rejected",
+    data:result,
+    statuscode:StatusCodes.OK,
+    success:true
+  })
+})
 export const paymentController = {
   payment,
   successController,
   getAllPayment,
   getAllPaymentByUser,
   failedController,
-  updateAdminStatus
+  updateAdminStatus,
+  rejectPayment
 }
