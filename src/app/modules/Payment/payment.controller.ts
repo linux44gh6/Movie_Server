@@ -99,10 +99,23 @@ const getAllPaymentByUser =catchAsync(async (req, res) => {
     });
 })
 
+
+const updateAdminStatus=catchAsync(async(req,res)=>{
+  const {id}=req.params
+  const result=await paymentService.updateAdminStatus(id)
+  sendResponse(res,{
+    message:"Payment Approved",
+    data:result,
+    statuscode:StatusCodes.OK,
+    success:true
+  })
+})
+
 export const paymentController = {
   payment,
   successController,
   getAllPayment,
   getAllPaymentByUser,
-  failedController
+  failedController,
+  updateAdminStatus
 }

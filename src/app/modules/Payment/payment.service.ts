@@ -33,6 +33,7 @@ const payment = async (data: Partial<TPaymentData>, user: any) => {
     userId: user.id,
     contentId: contentId || '',
     paymentStatus: false,
+    adminStatus: false
   };
   await prisma.payment.create({
     data: transactionData,
@@ -100,10 +101,31 @@ const getAllPaymentByUser = async (id: string) => {
     throw new ApiError(StatusCodes.FORBIDDEN, "Something went wrong")
   }
 }
+
+export const updateAdminStatus = async (id: string) => {
+  const isExist = await prisma.payment.findFirst({
+    where: {
+      id: id
+    }
+  })
+  if (!isExist) {
+    throw new ApiError(StatusCodes.FORBIDDEN, "Payment not found")
+  }
+  const result=await prisma.payment.update({
+    where:{
+      id:id
+    },
+    data:{
+      adminStatus:true
+    }
+  })
+  return result
+}
 export const paymentService = {
   payment,
   successPayment,
   getAllPayment,
   getAllPaymentByUser,
-  failedPayment
+  failedPayment,
+  updateAdminStatus
 }

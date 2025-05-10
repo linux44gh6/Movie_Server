@@ -182,10 +182,9 @@ const editComment = async (user: IAuthUser, commentId: string, payload: any) => 
     const comment = await prisma.comment.findFirstOrThrow({
         where: {
             id: commentId,
-            status: CommentStatus.PENDING,
         },
     });
-
+     console.log(userData);
     if (comment.userId !== userData.id) {
         throw new ApiError(httpStatus.FORBIDDEN, 'You are not authorized to edit this review');
     }
@@ -212,7 +211,7 @@ const deleteComment = async (user: IAuthUser, commentId: string) => {
             isDeleted: false,
         },
     });
-
+        
     const comment = await prisma.comment.findFirstOrThrow({
         where: {
             id: commentId,
